@@ -1,0 +1,2247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MERIT ACADEMY – LIBRARY</title>
+<style>
+  :root{
+    --bg:#0d1424;
+    --panel:#0f1730;
+    --panel-2:#101a31;
+    --surface:#162238;
+    --border:#22314f;
+    --accent:#3f5c94;
+    --accent-2:#1a2745;
+    --text:#f6f8fa;
+    --text-muted:#b9c3d8;
+    --danger:#3a1e24;
+    --danger-border:#71414a;
+    --shadow:0 14px 40px rgba(0,0,0,.38);
+    --shadow-hover:0 18px 60px rgba(0,0,0,.45);
+    --r-sm:10px;
+    --r-md:14px;
+    --r-lg:18px;
+    --sp-1:4px;
+    --sp-2:8px;
+    --sp-3:12px;
+    --sp-4:16px;
+    --sp-5:20px;
+    --sp-6:24px;
+    --focus-ring:0 0 0 3px rgba(63,92,148,.55);
+    --t-fast:140ms;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+  }
+  .muted{opacity:.75;color:var(--text-muted)}
+
+  /* Topbar */
+  .topbar{
+    position:sticky;top:0;z-index:20;
+    display:flex;align-items:center;gap:var(--sp-2);
+    padding:12px 16px;background:var(--surface);
+    border-bottom:1px solid var(--border)
+  }
+  .brand{font-size:18px;margin:0}.spacer{flex:1}
+  .logo{height:28px;width:auto;display:inline-block;margin:0 10px 0 6px}
+  .brandTitle{text-transform:uppercase;letter-spacing:.14em;font-weight:800;font-size:16px;margin:0;white-space:nowrap}
+
+  /* Hamburger Menu */
+  .hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:8px;background:var(--accent-2);border-radius:var(--r-sm);border:1px solid var(--border)}
+  .hamburger span{display:block;width:24px;height:3px;background:var(--text);border-radius:2px;transition:all .3s}
+  .hamburger.active span:nth-child(1){transform:rotate(45deg) translate(6px,6px)}
+  .hamburger.active span:nth-child(2){opacity:0}
+  .hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(6px,-6px)}
+
+  .mobileMenu{
+    position:fixed;left:-100%;top:0;width:280px;height:100%;background:var(--panel-2);
+    border-right:1px solid var(--border);z-index:100;transition:left .3s;overflow-y:auto;
+    display:flex;flex-direction:column;
+  }
+  .mobileMenu.show{left:0}
+  .mobileOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99}
+  .mobileOverlay.show{display:block}
+  .mobileMenuHeader{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+  .mobileMenuUser{font-weight:600;flex:1}
+  .mobileLangSwitch{display:flex;gap:4px}
+  .mobileLangSwitch button{padding:4px 10px;background:var(--accent-2);border:1px solid var(--border);border-radius:4px;color:var(--text);cursor:pointer;font-size:12px}
+  .mobileLangSwitch button.active{background:var(--accent)}
+  .mobileMenuNav{flex:1;padding:8px}
+  .mobileMenuNav button{
+    width:100%;text-align:left;padding:12px 16px;background:none;border:none;
+    color:var(--text);cursor:pointer;border-radius:var(--r-sm);
+    transition:background .2s;display:flex;align-items:center;gap:8px;font-size:15px
+  }
+  .mobileMenuNav button:hover{background:var(--accent-2)}
+  .mobileMenuNav button.active{background:var(--accent);font-weight:600}
+  .mobileMenuFooter{padding:8px;border-top:1px solid var(--border)}
+  .mobileMenuFooter button{
+    width:100%;text-align:left;padding:10px 16px;background:none;border:none;
+    color:var(--text);cursor:pointer;border-radius:var(--r-sm);transition:background .2s
+  }
+  .mobileMenuFooter button:hover{background:var(--accent-2)}
+
+  /* Dil seçici */
+  .langSelector{
+    display:flex;align-items:center;gap:8px;
+    padding:6px 12px;background:var(--accent-2);
+    border:1px solid var(--border);border-radius:999px;
+  }
+  .langBtn{
+    appearance:none;background:none;border:none;color:var(--text-muted);
+    padding:4px 8px;cursor:pointer;font-size:13px;font-weight:600;
+    border-radius:4px;transition:all var(--t-fast);
+  }
+  .langBtn:hover{color:var(--text)}
+  .langBtn.active{background:var(--accent);color:var(--text)}
+
+  /* İkinci menü barı */
+  .menubar{display:flex;gap:var(--sp-2);align-items:center;padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--border)}
+  .tab{appearance:none;border:1px solid var(--border);background:#0b1224;color:var(--text);padding:6px 12px;border-radius:999px;cursor:pointer;transition:border-color var(--t-fast), background var(--t-fast), transform var(--t-fast)}
+  .tab:hover{border-color:var(--accent)}
+  .tab:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+  .tab.active{background:var(--accent-2);border-color:var(--accent)}
+  .tab.icon{display:inline-flex;align-items:center;justify-content:center;width:36px;height:32px;font-size:16px}
+
+  /* Ayarlar menüsü */
+  .settingsMenu{position:relative;display:inline-block}
+  .settingsDropdown{
+    display:none;position:absolute;right:0;top:100%;margin-top:4px;
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--r-md);box-shadow:var(--shadow);
+    min-width:200px;z-index:100;
+  }
+  .settingsDropdown.show{display:block}
+  .settingsDropdown button{
+    width:100%;text-align:left;padding:10px 14px;
+    background:none;border:none;color:var(--text);
+    cursor:pointer;transition:background var(--t-fast);
+    border-bottom:1px solid var(--border);
+  }
+  .settingsDropdown button:last-child{border-bottom:none}
+  .settingsDropdown button:hover{background:var(--accent-2)}
+
+  /* Buttons & inputs */
+  .btn{
+    appearance:none;border:1px solid var(--border);background:var(--accent-2);color:var(--text);
+    padding:8px 12px;border-radius:var(--r-sm);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;
+    transition:transform var(--t-fast), box-shadow var(--t-fast), border-color var(--t-fast), background var(--t-fast)
+  }
+  .btn:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:var(--shadow)}
+  .btn:active{transform:translateY(0)}
+  .btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+  .btn.icon{width:36px;height:32px;justify-content:center;padding:0}
+  .danger{border-color:var(--danger-border);background:var(--danger)}
+
+  select,input,textarea{
+    background:#0b1224;color:var(--text);border:1px solid var(--border);border-radius:var(--r-sm);padding:6px 10px;
+    transition:border-color var(--t-fast), box-shadow var(--t-fast)
+  }
+  select:focus-visible,input:focus-visible,textarea:focus-visible{outline:none;border-color:var(--accent);box-shadow:var(--focus-ring)}
+  .toolbar{display:flex;gap:var(--sp-2);align-items:center}
+
+  /* Sayfalar */
+  .page{display:none;padding:18px}
+  .page .inner{max-width:1000px;margin:auto;line-height:1.6;opacity:.9}
+  
+  /* About ve Events için özel düzenleme - SOLA YAPIŞTIR */
+  #aboutView .inner{margin:0;margin-left:18px}
+  #eventsGate{margin:0;margin-left:0}
+  #eventsBody{margin:0;margin-left:0}
+
+  /* Liste görünümleri */
+  .library{padding:16px}
+  .searchRow{display:flex;gap:var(--sp-2);align-items:center;margin:0 0 12px;flex-wrap:wrap}
+  .searchRow input{flex:0 0 16.666%;max-width:16.666%;min-width:220px}
+  
+  .allowedCollections{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .collectionChip{
+    padding:6px 12px;background:var(--accent-2);
+    border:1px solid var(--border);border-radius:999px;
+    font-size:13px;cursor:pointer;transition:all var(--t-fast);
+  }
+  .collectionChip:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .collectionChip.active{background:var(--accent);border-color:var(--accent)}
+
+  @media(max-width:900px){ .searchRow input{flex:1;max-width:100%} }
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:visible;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:transform var(--t-fast), box-shadow var(--t-fast)}
+  .card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+  .cover{aspect-ratio:3/4;width:100%;display:block;object-fit:cover;background:var(--panel);position:relative}
+  .cover-edit-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;color:white;font-size:14px;cursor:pointer;opacity:0;transition:opacity var(--t-fast)}
+  .cover-container:hover .cover-edit-overlay{opacity:1}
+  .meta{padding:10px;display:grid;gap:6px}
+  .title{font-weight:600}.sub{opacity:.8;font-size:12px}
+  .badges{padding:0 10px 8px}
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;opacity:.7;background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:4px 8px;margin-right:6px}
+  .tag.flip{--ic:"📖"} .tag.pdf{--ic:"📄"}
+  .tag::before{content:var(--ic)}
+
+  .row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;gap:8px;align-items:center;padding:0 10px 10px}
+  .row select{width:100%;min-width:0}
+  .row .btn{white-space:nowrap}
+
+  .actions{display:flex;gap:var(--sp-2);padding:10px;flex-wrap:wrap}
+  .alert{padding:14px;background:var(--panel);border:1px dashed var(--accent);border-radius:var(--r-sm);text-align:left;margin-left:0}
+
+  /* Viewer */
+  .viewer{position:fixed;inset:0;display:none;grid-template-rows:auto 1fr;background:#000; z-index:10}
+  .viewer header{display:flex;gap:10px;align-items:center;padding:10px;background:#0d1424;border-bottom:1px solid var(--border)}
+  iframe{width:100%;height:100%;border:none}
+
+  /* Paneller */
+  .panel{display:none;border-top:1px solid var(--border);background:var(--panel)}
+  .panel .inner{padding:14px;display:grid;gap:10px;max-width:1000px;margin:auto}
+  .formrow{display:grid;grid-template-columns:160px 1fr;gap:10px;align-items:center}
+  .hint{opacity:.75;font-size:12px}
+  .footer{display:flex;gap:10px;justify-content:flex-end}
+
+  /* Login/Modal ortak */
+  .loginWrap{position:fixed;inset:0;background:rgba(5,10,20,.85);display:grid;place-items:center;z-index:30}
+  .loginBox{width:min(520px,92vw);background:var(--panel-2);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;display:grid;gap:12px;box-shadow:var(--shadow)}
+  .loginBox h2{margin:0;font-size:18px;letter-spacing:.1em;text-transform:uppercase}
+  .loginRow{display:grid;gap:6px}
+  .err{color:#ff8b8b;font-size:12px;min-height:16px}
+  .loginWrap.anim .loginBox{animation:pop .18s ease-out}
+  @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+
+  .collectionsList{display:grid;gap:8px;margin-top:12px}
+  .collectionItem{
+    display:grid;grid-template-columns:1fr auto auto;gap:8px;
+    align-items:center;padding:12px;
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--r-sm);
+  }
+  .collectionName{font-weight:600;font-size:15px}
+
+  .welcomeCard{width:min(980px,94vw); background:var(--panel); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow); padding:22px; display:grid; gap:16px}
+  .wHead{display:flex; align-items:center; gap:12px}
+  .wHead img{height:30px}
+  .wTitle{font-weight:800; letter-spacing:.12em; text-transform:uppercase; margin:0}
+  .wHero{display:grid; grid-template-columns:220px 1fr; gap:18px; align-items:center}
+  .wHero img{width:100%; border-radius:var(--r-md); border:1px solid var(--border); background:#0b1224}
+  .wText p{margin:.4rem 0; line-height:1.6}
+  .wText h4{margin:10px 0 6px; letter-spacing:.04em}
+  .wText ul{margin:.2rem 0 .6rem 1rem}
+
+  #casinosView{padding-left:0}
+  #casinosView .inner{max-width:none;margin:0}
+  #casinosView h3{margin:0 0 12px 16px;font-size:20px;font-weight:600;letter-spacing:.02em}
+
+  .casinoList{
+    display:grid;grid-template-columns:repeat(auto-fit, minmax(360px,1fr));
+    gap:16px;padding:8px 16px 16px;
+  }
+  .casinoRow{
+    display:grid;grid-template-columns:1fr;
+    gap:12px; align-items:start;
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;
+    box-shadow:var(--shadow);transition:transform var(--t-fast), box-shadow var(--t-fast)
+  }
+  .casinoRow:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+  .casinoRow[draggable="true"]{cursor:grab}
+  .casinoRow.dragging{opacity:.6}
+  .dropPos{height:6px;border-radius:3px;background:rgba(63,92,148,.55);margin:-3px 0 9px}
+
+  .casinoRow img{width:100%;border-radius:var(--r-sm);border:1px solid var(--border);background:#0b1224}
+  .casinoRow .right{display:grid;gap:10px}
+  .casinoHdr{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;letter-spacing:.03em;opacity:.92}
+  .editTitleBtn{font-size:12px;padding:4px 8px}
+  .casinoRow textarea{
+    width:100%;min-height:200px;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;font-size:14px;line-height:1.6;padding:10px 12px
+  }
+  .casinoBtns{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+
+  .dropZone{
+    display:none;
+    margin:10px 0 14px;
+    border:2px dashed var(--accent); border-radius:var(--r-md);
+    padding:16px; background:rgba(63,92,148,.12);
+    text-align:center; font-size:14px; letter-spacing:.02em;
+    transition:background var(--t-fast), border-color var(--t-fast)
+  }
+  .dropZone.active{background:rgba(63,92,148,.22); border-color:#6f93d1}
+  .dropZone small{display:block;opacity:.8;margin-top:4px}
+
+  #toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:60;pointer-events:none}
+  .toastItem{
+    background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:8px 14px;margin-top:8px;box-shadow:var(--shadow);opacity:.98
+  }
+
+  .hidden{display:none}
+  .cover-container{position:relative;display:block}
+  .cover-edit-overlay{
+    position:absolute;top:0;left:0;right:0;bottom:0;
+    background:rgba(0,0,0,0.7);display:flex;align-items:center;
+    justify-content:center;color:white;font-size:14px;cursor:pointer;
+    opacity:0;transition:opacity var(--t-fast);z-index:5;
+  }
+  .cover-container:hover .cover-edit-overlay{opacity:1 !important}
+
+  #casinoInfoDlg .loginBox{position:relative;width:min(900px,94vw)}
+  #casinoInfoDlg .loginBox h2{padding-left:56px}
+  .casinoInfoLogo{position:absolute;top:14px;left:18px;height:32px;width:auto}
+  #casinoInfoText{width:100%;min-height:420px}
+
+  /* Hakkımızda sol tab */
+  .aboutTabs{
+    display:flex;flex-direction:column;gap:6px;margin-right:16px;min-width:180px;
+    align-self:flex-start;
+  }
+  .aboutTabs button{
+    text-align:left;padding:10px 14px;background:var(--accent-2);
+    border:1px solid var(--border);border-radius:var(--r-sm);
+    color:var(--text);cursor:pointer;transition:all .2s;
+  }
+  .aboutTabs button:hover{border-color:var(--accent)}
+  .aboutTabs button.active{background:var(--accent);font-weight:600}
+  .aboutContainer{display:flex;gap:16px;align-items:flex-start}
+  #aboutBody{text-align:left;padding-left:0;margin-left:0}
+  #aboutBody h3{text-align:left;margin-left:0}
+  #aboutBody p{text-align:left;margin-left:0}
+  
+  /* Etkinlikler tab menüsü sola */
+  .eventsTabsContainer{display:flex;justify-content:flex-start;margin-bottom:12px;padding-left:18px}
+  .eventsTabsContainer .searchRow{margin:0;justify-content:flex-start}
+  #eventsBody{text-align:left;padding-left:18px}
+  #eventsGrid{text-align:left}
+  #eventsGrid p{text-align:left;margin-left:0}
+  
+  /* Etkinlik alt klasör satırı gösterimi */
+  .formrow#eventSubfolderRow{display:none}
+  .formrow#eventSubfolderRow.show{display:grid}
+
+  /* Responsive */
+  @media(max-width:700px){
+    .formrow{grid-template-columns:1fr}
+    .toolbar{flex-wrap:wrap}
+    .brandTitle{font-size:13px;letter-spacing:.10em}
+    .logo{height:22px}
+    .row{grid-template-columns:1fr 1fr}
+    .wHero{grid-template-columns:1fr}
+    .hamburger{display:flex}
+    .langSelector,.desktopNav,.desktopTools{display:none !important}
+    .topbar{padding:10px 12px}
+    .menubar{display:none}
+    .aboutContainer{flex-direction:column}
+    .aboutTabs{width:100%;min-width:0;flex-direction:row;overflow-x:auto}
+  }
+</style>
+</head>
+<body>
+
+  <!-- Mobile Overlay -->
+  <div class="mobileOverlay" id="mobileOverlay"></div>
+
+  <!-- Mobile Menu -->
+  <div class="mobileMenu" id="mobileMenu">
+    <div class="mobileMenuHeader">
+      <div class="mobileMenuUser" id="mobileMenuUser">—</div>
+      <div class="mobileLangSwitch">
+        <button id="mobileLangTR" class="active">TR</button>
+        <button id="mobileLangEN">EN</button>
+      </div>
+    </div>
+    <div class="mobileMenuNav" id="mobileMenuNav">
+      <button id="mNavHome">🏠 <span data-tr="ANA SAYFA" data-en="HOME">ANA SAYFA</span></button>
+      <button id="mNavAbout" data-tr="HAKKIMIZDA" data-en="ABOUT US">HAKKIMIZDA</button>
+      <button id="mNavCasinos" data-tr="CASINOLARIMIZ" data-en="OUR CASINOS">CASINOLARIMIZ</button>
+      <button id="mNavEvents" data-tr="ETKİNLİKLER" data-en="EVENTS">ETKİNLİKLER</button>
+      <button id="mNavArticles" data-tr="MAKALELER" data-en="ARTICLES">MAKALELER</button>
+      <button id="mNavLibrary" data-tr="KÜTÜPHANE" data-en="LIBRARY">KÜTÜPHANE</button>
+    </div>
+    <div class="mobileMenuFooter">
+      <button id="mNavSettings" class="adminOnly" data-tr="⚙️ AYARLAR" data-en="⚙️ SETTINGS">⚙️ AYARLAR</button>
+      <button id="mNavHelp" data-tr="❓ YARDIM" data-en="❓ HELP">❓ YARDIM</button>
+      <button id="mNavLogout" class="hidden" data-tr="🚪 ÇIKIŞ YAP" data-en="🚪 LOGOUT">🚪 ÇIKIŞ YAP</button>
+      <button id="mNavLogin" data-tr="🔑 GİRİŞ YAP" data-en="🔑 LOGIN">🔑 GİRİŞ YAP</button>
+    </div>
+  </div>
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <button id="backBtn" class="btn hidden" type="button" data-tr="← Listeye dön" data-en="← Back to list">← Listeye dön</button>
+
+    <img src="logo.png" class="logo" alt="Merit International Logo" onerror="this.style.display='none'"/>
+    <h1 class="brand brandTitle" data-tr="MERIT ACADEMY – LIBRARY" data-en="MERIT ACADEMY – LIBRARY">MERIT ACADEMY – LIBRARY</h1>
+
+    <div class="spacer"></div>
+
+    <div class="toolbar desktopTools" id="collectionsToolbar" style="display:none">
+      <label class="muted" style="font-size:12px;" data-tr="Koleksiyon:" data-en="Collection:">Koleksiyon:</label>
+      <select id="colFilter"></select>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- İçerik ekleme butonları - sadece web sürümünde görünür -->
+    <button id="permaPdfBtn" class="btn editOnly desktopNav" type="button" data-tr="📥 Çoklu PDF Yükle" data-en="📥 Upload Multiple PDFs">📥 Çoklu PDF Yükle</button>
+    <button id="toggleAddBook" class="btn editOnly desktopNav" type="button" data-tr="＋ İçerik Ekle" data-en="＋ Add Content">＋ İçerik Ekle</button>
+    <button id="toggleAddPdf" class="btn editOnly desktopNav" type="button" data-tr="＋ PDF (Yol ile)" data-en="＋ PDF (By Path)">＋ PDF (Yol ile)</button>
+
+    <div class="spacer"></div>
+
+    <div class="langSelector">
+      <span style="font-size:16px">🌐</span>
+      <button id="langTR" class="langBtn active" type="button">TR</button>
+      <button id="langEN" class="langBtn" type="button">EN</button>
+    </div>
+
+    <span id="whoami" class="muted desktopNav">—</span>
+    <button id="usersBtn" class="btn adminOnly desktopNav" type="button" data-tr="Kullanıcılar" data-en="Users">Kullanıcılar</button>
+    <button id="loginTopBtn" class="btn desktopNav" type="button" data-tr="Giriş Yap" data-en="Login">Giriş Yap</button>
+    <button id="logoutBtn" class="btn hidden desktopNav" type="button" data-tr="Çıkış" data-en="Logout">Çıkış</button>
+  </header>
+
+  <!-- İkinci bar (Desktop) -->
+  <nav class="menubar desktopNav">
+    <button id="navHome" class="tab icon" title="Ana Sayfa" type="button">🏠</button>
+    <button id="navAbout" class="tab" type="button" data-tr="HAKKIMIZDA" data-en="ABOUT US">HAKKIMIZDA</button>
+    <button id="navCasinos" class="tab" type="button" data-tr="CASINOLARIMIZ" data-en="OUR CASINOS">CASINOLARIMIZ</button>
+    <button id="navEvents" class="tab" type="button" data-tr="ETKİNLİKLER" data-en="EVENTS">ETKİNLİKLER</button>
+    <button id="navArticles" class="tab" type="button" data-tr="MAKALELER" data-en="ARTICLES">MAKALELER</button>
+    <button id="navLibrary" class="tab" type="button" data-tr="KÜTÜPHANE" data-en="LIBRARY">KÜTÜPHANE</button>
+    
+    <div class="spacer"></div>
+    
+    <div class="settingsMenu adminOnly" id="settingsMenu">
+      <button class="tab icon" type="button" title="Ayarlar">⚙️</button>
+      <div class="settingsDropdown" id="settingsDropdown">
+        <button id="backupBtn" type="button" data-tr="🗄️ Yedekle" data-en="🗄️ Backup">🗄️ Yedekle</button>
+        <button id="restoreBtn" type="button" data-tr="📦 Geri Yükle" data-en="📦 Restore">📦 Geri Yükle</button>
+        <button id="manageColsBtn" type="button" data-tr="📁 Koleksiyonları Düzenle" data-en="📁 Manage Collections">📁 Koleksiyonları Düzenle</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Giriş ekranı -->
+  <section id="login" class="loginWrap hidden">
+    <div class="loginBox">
+      <h2 data-tr="Giriş" data-en="Login">Giriş</h2>
+      <div class="loginRow"><label data-tr="Kullanıcı adı" data-en="Username">Kullanıcı adı</label><input id="lgUser" autocomplete="username" /></div>
+      <div class="loginRow"><label data-tr="Şifre" data-en="Password">Şifre</label><input id="lgPass" type="password" autocomplete="current-password" /></div>
+      <div class="err" id="lgErr"></div>
+      <div style="display:flex; gap:10px; justify-content:flex-end"><button id="lgBtn" class="btn" type="button" data-tr="Giriş Yap" data-en="Login">Giriş Yap</button></div>
+      <div class="hint" data-tr="İlk kurulum: admin/admin123, guest/guest123. (Demo – gerçek güvenlik için sunucu gerekir.)" data-en="Initial setup: admin/admin123, guest/guest123. (Demo – requires server for real security.)">İlk kurulum: <b>admin/admin123</b>, <b>guest/guest123</b>. (Demo – gerçek güvenlik için sunucu gerekir.)</div>
+    </div>
+  </section>
+
+  <!-- Koleksiyon Yönetimi -->
+  <section id="manageColsDlg" class="loginWrap hidden">
+    <div class="loginBox" style="max-width:700px">
+      <h2 data-tr="Koleksiyonları Düzenle" data-en="Manage Collections">Koleksiyonları Düzenle</h2>
+      <div class="collectionsList" id="collectionsList"></div>
+      <div style="margin-top:12px">
+        <button id="addNewColBtn" class="btn" type="button" data-tr="＋ Yeni Koleksiyon Ekle" data-en="＋ Add New Collection">＋ Yeni Koleksiyon Ekle</button>
+      </div>
+      <div class="footer">
+        <button id="closeColsBtn" class="btn" type="button" data-tr="Kapat" data-en="Close">Kapat</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANA SAYFA -->
+  <section id="homeView" class="page" style="display:block">
+    <div class="welcomeCard" style="margin:auto">
+      <div class="wHead">
+        <img src="logo.png" alt="Merit Logo" onerror="this.style.display='none'">
+        <h2 class="wTitle" data-tr="MERIT ACADEMY'YE HOŞGELDİNİZ" data-en="WELCOME TO MERIT ACADEMY">MERIT ACADEMY'YE HOŞGELDİNİZ</h2>
+      </div>
+      <div class="wHero">
+        <img src="meritacademy.png" alt="Merit Academy" loading="lazy">
+        <div class="wText">
+          <p data-tr="1989'dan bu yana casino sektöründe liderlik ve güvenin simgesi olan Merit Grubu, bugün Merit Academy ile bilgi, deneyim ve yenilik yolculuğunu sizlerle paylaşıyor." data-en="Since 1989, Merit Group, the symbol of leadership and trust in the casino industry, shares its knowledge, experience and innovation journey with you through Merit Academy.">1989'dan bu yana casino sektöründe liderlik ve güvenin simgesi olan <b>Merit Grubu</b>, bugün <b>Merit Academy</b> ile bilgi, deneyim ve yenilik yolculuğunu sizlerle paylaşıyor.</p>
+          <h4 data-tr="Amacımız;" data-en="Our Purpose:">Amacımız;</h4>
+          <ul>
+            <li data-tr="Her yeni personelin görevine en güçlü şekilde hazırlanmasını sağlamak," data-en="To ensure every new staff member is fully prepared for their role,">Her yeni personelin görevine en güçlü şekilde hazırlanmasını sağlamak,</li>
+            <li data-tr="Tüm çalışanların aynı bilgi kaynağından, güncel ve güvenilir dokümantasyona erişmesini mümkün kılmak," data-en="To enable all employees to access current and reliable documentation from the same source,">Tüm çalışanların aynı bilgi kaynağından, güncel ve güvenilir dokümantasyona erişmesini mümkün kılmak,</li>
+            <li data-tr="Casino yönetimi ve operasyonlarında mükemmelliği, sürdürülebilir gelişimi ve kurumsal standartları güçlendirmektir." data-en="To strengthen excellence, sustainable development and corporate standards in casino management and operations.">Casino yönetimi ve operasyonlarında mükemmelliği, sürdürülebilir gelişimi ve kurumsal standartları güçlendirmektir.</li>
+          </ul>
+          <h4 data-tr="Vizyonumuz:" data-en="Our Vision:">Vizyonumuz:</h4>
+          <p data-tr="Dünya çapında tanınan, sektörde örnek gösterilen, yenilikçi ve sürekli gelişen bir kurum olarak geleceğe yön vermek." data-en="To lead the future as a globally recognized, industry-leading, innovative and continuously developing institution.">Dünya çapında tanınan, sektörde örnek gösterilen, yenilikçi ve sürekli gelişen bir kurum olarak geleceğe yön vermek.</p>
+          <h4 data-tr="Misyonumuz:" data-en="Our Mission:">Misyonumuz:</h4>
+          <p data-tr="Personelimize doğru bilgi, güçlü eğitim ve gelişim fırsatları sunarak; hem bireysel hem kurumsal başarıyı en yüksek seviyeye çıkarmak." data-en="To maximize both individual and corporate success by providing our staff with accurate information, strong training and development opportunities.">Personelimize doğru bilgi, güçlü eğitim ve gelişim fırsatları sunarak; hem bireysel hem kurumsal başarıyı en yüksek seviyeye çıkarmak.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HAKKIMIZDA -->
+  <section id="aboutView" class="page">
+    <div class="aboutContainer">
+      <div class="aboutTabs">
+        <button id="abHist" class="active" type="button" data-tr="Tarihçe" data-en="History">Tarihçe</button>
+        <button id="abStaff" type="button" data-tr="Öğretim Görevlileri" data-en="Teaching Staff">Öğretim Görevlileri</button>
+        <button id="abMgmt" type="button" data-tr="Yönetim Ekibi" data-en="Management Team">Yönetim Ekibi</button>
+      </div>
+      <div id="aboutBody" class="inner" style="flex:1"><h3>Tarihçe</h3><p data-tr="İçerik yakında…" data-en="Content coming soon…">İçerik yakında…</p></div>
+    </div>
+  </section>
+
+  <!-- Kullanıcı Yönetimi -->
+  <section id="usersPanel" class="panel">
+    <div class="inner">
+      <h3 style="margin:0" data-tr="Kullanıcılar" data-en="Users">Kullanıcılar</h3>
+      <div id="usersList" class="hint">—</div>
+      <hr style="border-color:var(--border)">
+      <div class="formrow"><label data-tr="Yeni kullanıcı adı" data-en="New username">Yeni kullanıcı adı</label><input id="nuUser" placeholder="ör: editor1"></div>
+      <div class="formrow"><label data-tr="Şifre" data-en="Password">Şifre</label><input id="nuPass" type="password" data-tr-placeholder="en az 6 karakter" data-en-placeholder="at least 6 characters" placeholder="en az 6 karakter"></div>
+      <div class="formrow"><label data-tr="Rol" data-en="Role">Rol</label>
+        <select id="nuRole">
+          <option value="viewer" data-tr="viewer (okuma)" data-en="viewer (read only)">viewer (okuma)</option>
+          <option value="editor" data-tr="editor (ekle/sil)" data-en="editor (add/delete)">editor (ekle/sil)</option>
+          <option value="admin" data-tr="admin (tümü)" data-en="admin (all)">admin (tümü)</option>
+        </select>
+      </div>
+      <div class="formrow"><label data-tr="İzinli Koleksiyonlar" data-en="Allowed Collections">İzinli Koleksiyonlar</label><div id="nuAllowed" class="checks"></div></div>
+      <div class="footer"><button id="nuAdd" class="btn" type="button" data-tr="Kullanıcı Ekle" data-en="Add User">Kullanıcı Ekle</button></div>
+      <div class="hint" data-tr="Bu demo client-side; gerçek güvenlik için sunucu/SSO gerekir." data-en="This is a client-side demo; real security requires server/SSO.">Bu demo client-side; gerçek güvenlik için sunucu/SSO gerekir.</div>
+    </div>
+  </section>
+
+  <!-- Kullanıcı Düzenle -->
+  <section id="editUserDlg" class="loginWrap hidden">
+    <div class="loginBox" style="max-width:520px">
+      <h2 data-tr="Kullanıcı Düzenle" data-en="Edit User">Kullanıcı Düzenle</h2>
+      <div class="loginRow"><label data-tr="Kullanıcı" data-en="User">Kullanıcı</label><input id="euUser" disabled /></div>
+      <div class="loginRow"><label data-tr="Rol" data-en="Role">Rol</label>
+        <select id="euRole">
+          <option value="viewer" data-tr="viewer (okuma)" data-en="viewer (read only)">viewer (okuma)</option>
+          <option value="editor" data-tr="editor (ekle/sil)" data-en="editor (add/delete)">editor (ekle/sil)</option>
+          <option value="admin" data-tr="admin (tümü)" data-en="admin (all)">admin (tümü)</option>
+        </select>
+      </div>
+      <div class="loginRow"><label data-tr="İzinli Koleksiyonlar" data-en="Allowed Collections">İzinli Koleksiyonlar</label><div id="euAllowed" class="checks"></div></div>
+      <div style="display:flex; gap:10px; justify-content:flex-end">
+        <button id="euClose" class="btn danger" type="button" data-tr="İptal" data-en="Cancel">İptal</button>
+        <button id="euSave" class="btn" type="button" data-tr="Kaydet" data-en="Save">Kaydet</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASINO INFO -->
+  <section id="casinoInfoDlg" class="loginWrap hidden">
+    <div class="loginBox">
+      <img src="meritacademy.png" class="casinoInfoLogo" alt="Merit Academy" onerror="this.style.display='none'">
+      <h2 data-tr="CASINO INFO" data-en="CASINO INFO">CASINO INFO</h2>
+      <div class="loginRow">
+        <label data-tr="Bilgi" data-en="Information">Bilgi</label>
+        <textarea id="casinoInfoText" data-tr-placeholder="Casino hakkında detay…" data-en-placeholder="Details about the casino…" placeholder="Casino hakkında detay…"></textarea>
+      </div>
+      <div style="display:flex; gap:10px; justify-content:flex-end">
+        <button id="ciClose" class="btn danger" type="button" data-tr="Kapat" data-en="Close">Kapat</button>
+        <button id="ciSave" class="btn" type="button" data-tr="Kaydet" data-en="Save">Kaydet</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- EKLE paneli -->
+  <section id="addPanel" class="panel">
+    <div class="inner">
+      <div class="formrow"><label for="bType" data-tr="Tür" data-en="Type">Tür</label>
+        <select id="bType">
+          <option value="flipbook">Flipbook</option>
+          <option value="pdf">PDF</option>
+        </select>
+      </div>
+      <div class="formrow"><label for="bFolder" data-tr="Klasör" data-en="Folder">Klasör</label>
+        <select id="bFolder">
+          <option value="makaleler" data-tr="Makaleler" data-en="Articles">Makaleler</option>
+          <option value="dokumanlar" data-tr="Dökümanlar" data-en="Documents">Dökümanlar</option>
+          <option value="etkinlikler" data-tr="Etkinlikler" data-en="Events">Etkinlikler</option>
+        </select>
+      </div>
+      <div class="formrow" id="eventSubfolderRow">
+        <label for="bEventSub" data-tr="Etkinlik Türü" data-en="Event Type">Etkinlik Türü</label>
+        <select id="bEventSub">
+          <option value="turnuvalar" data-tr="Turnuvalar" data-en="Tournaments">Turnuvalar</option>
+          <option value="yarismalar" data-tr="Yarışmalar" data-en="Competitions">Yarışmalar</option>
+        </select>
+      </div>
+      <div class="formrow"><label for="bLang" data-tr="Dil" data-en="Language">Dil</label>
+        <select id="bLang">
+          <option value="tr">Türkçe</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      <div class="formrow"><label for="bCol" data-tr="Koleksiyon" data-en="Collection">Koleksiyon</label><select id="bCol"></select></div>
+      <div class="formrow"><label for="bId">ID</label><input id="bId" placeholder="ör: pr-book-2"></div>
+      <div class="formrow"><label for="bTitle" data-tr="Başlık" data-en="Title">Başlık</label><input id="bTitle" placeholder="ör: PR Book 2"></div>
+      <div class="formrow"><label for="bCover" data-tr="Kapak yolu" data-en="Cover path">Kapak yolu</label><input id="bCover" data-tr-placeholder="flip: books/<slug>/data/1.jpg  |  pdf: boş olabilir" data-en-placeholder="flip: books/<slug>/data/1.jpg  |  pdf: can be empty" placeholder="flip: books/<slug>/data/1.jpg  |  pdf: boş olabilir"></div>
+      <div class="formrow"><label for="bPath" data-tr="Açılacak dosya" data-en="File to open">Açılacak dosya</label><input id="bPath" data-tr-placeholder="flip: books/<slug>/index.html  |  pdf: books/<slug>.pdf" data-en-placeholder="flip: books/<slug>/index.html  |  pdf: books/<slug>.pdf" placeholder="flip: books/<slug>/index.html  |  pdf: books/<slug>.pdf"></div>
+      <div class="footer">
+        <button id="addCancel" class="btn danger" type="button" data-tr="Vazgeç" data-en="Cancel">Vazgeç</button>
+        <button id="fillTpl" class="btn" type="button" data-tr="Şablon doldur" data-en="Fill template">Şablon doldur</button>
+        <button id="addBookBtn" class="btn" type="button" data-tr="Ekle ve Kaydet" data-en="Add and Save">Ekle ve Kaydet</button>
+      </div>
+      <div class="hint" data-tr="Kayıtlar localStorage'da; Kalıcı PDF'ler IndexedDB'de tutulur." data-en="Records in localStorage; Permanent PDFs stored in IndexedDB.">Kayıtlar localStorage'da; Kalıcı PDF'ler IndexedDB'de tutulur.</div>
+    </div>
+  </section>
+
+  <!-- GİZLİ INPUTLAR -->
+  <input id="permaPdfInput" type="file" accept="application/pdf" class="hidden" multiple />
+  <input id="backupFileInput" type="file" accept="application/json" class="hidden" />
+  <input id="coverImageInput" type="file" accept="image/*" class="hidden" />
+
+  <!-- CASINOLARIMIZ -->
+  <section id="casinosView" class="page">
+    <div class="inner">
+      <h3 data-tr="Casinolarımız" data-en="Our Casinos">Casinolarımız</h3>
+      <div id="casinoList" class="casinoList"></div>
+      <div class="hint" style="margin-left:16px" data-tr="Görseller, CASINOLARIMIZ/1.jpg, 2.jpg, ... olarak otomatik yüklenir." data-en="Images are automatically loaded as CASINOLARIMIZ/1.jpg, 2.jpg, ...">Görseller, <code>CASINOLARIMIZ/1.jpg, 2.jpg, ...</code> olarak otomatik yüklenir.</div>
+    </div>
+  </section>
+
+  <!-- ETKİNLİKLER -->
+  <section id="eventsView" class="page">
+    <div id="eventsGate" class="inner"></div>
+  </section>
+
+  <!-- MAKALELER -->
+  <main id="articlesView" class="library" style="display:none">
+    <div class="searchRow">
+      <input id="artSearch" data-tr-placeholder="Makalelerde ara..." data-en-placeholder="Search articles..." placeholder="Makalelerde ara...">
+    </div>
+    <div id="articlesGrid" class="grid" aria-live="polite"></div>
+  </main>
+
+  <!-- KÜTÜPHANE -->
+  <main id="libraryView" class="library" style="display:none">
+    <div class="searchRow">
+      <input id="libSearch" data-tr-placeholder="Kütüphanede ara... (Dökümanlar)" data-en-placeholder="Search library... (Documents)" placeholder="Kütüphanede ara... (Dökümanlar)">
+    </div>
+
+    <div id="allowedCollectionsBar" class="allowedCollections"></div>
+
+    <div id="dropZone" class="dropZone editOnly" aria-hidden="true">
+      <b data-tr="Kalıcı PDF'leri buraya sürükleyip bırak" data-en="Drag and drop permanent PDFs here">Kalıcı PDF'leri buraya sürükleyip bırak</b>
+      <small data-tr="(Birden fazla dosyayı aynı anda bırakabilirsin)" data-en="(You can drop multiple files at once)">(Birden fazla dosyayı aynı anda bırakabilirsin)</small>
+    </div>
+
+    <div id="libraryGrid" class="grid" aria-live="polite"></div>
+  </main>
+
+  <!-- Görüntüleyici -->
+  <section id="viewerView" class="viewer">
+    <header>
+      <button id="menuBtn" class="btn" type="button" data-tr="← Listeye dön" data-en="← Back to list">← Listeye dön</button>
+      <div id="viewTitle" style="opacity:.8;font-size:12px"></div>
+      <div class="spacer"></div>
+      <a id="openNewTab" class="btn" target="_blank" rel="noopener" data-tr="Yeni sekmede aç" data-en="Open in new tab">Yeni sekmede aç</a>
+    </header>
+    <iframe id="viewerFrame" title="Görüntüleyici"></iframe>
+  </section>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+<script>
+/* DİL SİSTEMİ */
+let CURRENT_LANG = 'tr';
+
+const TRANSLATIONS = {
+  tr: {
+    'backToList': '← Listeye dön',
+    'collection': 'Koleksiyon:',
+    'allCollections': 'Tümü',
+    'noResults': 'Sonuç bulunamadı.',
+    'loginRequired': 'bölümünü görmek için oturum açmanız gerekli.',
+    'loginButton': 'Oturum Aç',
+    'articles': 'Makaleler',
+    'documents': 'Dökümanlar',
+    'events': 'Etkinlikler',
+    'noItemsOrNoPermission': 'Bu klasörde/kol. öğe yok ya da izniniz yok.',
+    'flipbook': 'Flipbook',
+    'pdf': 'PDF',
+    'folder': 'Klasör:',
+    'moveBtn': 'Taşı',
+    'collectionLabel': 'Koleksiyon:',
+    'assignBtn': 'Ata',
+    'openIframe': 'Aç (iframe)',
+    'delete': 'Sil',
+    'noPermission': 'Yetkin yok.',
+    'confirmDelete': 'Bu kaydı silmek istiyor musun? (Dosyalar silinmez)',
+    'saved': 'Kaydedildi',
+    'save': 'Kaydet',
+    'edit': 'Düzenle',
+    'editName': 'Adı Düzenle',
+    'casinoInfo': 'CASINO INFO',
+    'description': 'Açıklama…',
+    'casinoName': 'Casino adı:',
+    'history': 'Tarihçe',
+    'teachingStaff': 'Öğretim Görevlileri',
+    'managementTeam': 'Yönetim Ekibi',
+    'contentComingSoon': 'İçerik yakında…',
+    'tournaments': 'Turnuvalar',
+    'competitions': 'Yarışmalar',
+    'eventsLoginRequired': 'bölümünü görüntülemek için oturum açmanız gerekiyor.',
+    'permanentPdfAdded': 'kalıcı PDF eklendi',
+    'allColsLabel': 'Tüm koleksiyonlar',
+    'noAllowedCollections': 'İzinli koleksiyon yok',
+    'editCover': 'Kapağı Düzenle',
+    'language': 'Dil:',
+    'setLang': 'Ayarla'
+  },
+  en: {
+    'backToList': '← Back to list',
+    'collection': 'Collection:',
+    'allCollections': 'All',
+    'noResults': 'No results found.',
+    'loginRequired': 'section requires login.',
+    'loginButton': 'Login',
+    'articles': 'Articles',
+    'documents': 'Documents',
+    'events': 'Events',
+    'noItemsOrNoPermission': 'No items in this folder/collection or no permission.',
+    'flipbook': 'Flipbook',
+    'pdf': 'PDF',
+    'folder': 'Folder:',
+    'moveBtn': 'Move',
+    'collectionLabel': 'Collection:',
+    'assignBtn': 'Assign',
+    'openIframe': 'Open (iframe)',
+    'delete': 'Delete',
+    'noPermission': 'No permission.',
+    'confirmDelete': 'Delete this record? (Files will not be deleted)',
+    'saved': 'Saved',
+    'save': 'Save',
+    'edit': 'Edit',
+    'editName': 'Edit Name',
+    'casinoInfo': 'CASINO INFO',
+    'description': 'Description…',
+    'casinoName': 'Casino name:',
+    'history': 'History',
+    'teachingStaff': 'Teaching Staff',
+    'managementTeam': 'Management Team',
+    'contentComingSoon': 'Content coming soon…',
+    'tournaments': 'Tournaments',
+    'competitions': 'Competitions',
+    'eventsLoginRequired': 'section requires login.',
+    'permanentPdfAdded': 'permanent PDF(s) added',
+    'allColsLabel': 'All collections',
+    'noAllowedCollections': 'No allowed collections',
+    'editCover': 'Edit Cover',
+    'language': 'Language:',
+    'setLang': 'Set'
+  }
+};
+
+function t(key) {
+  return TRANSLATIONS[CURRENT_LANG][key] || TRANSLATIONS.tr[key] || key;
+}
+
+function switchLanguage(lang) {
+  CURRENT_LANG = lang;
+  localStorage.setItem('merit_lang', lang);
+  
+  document.getElementById('langTR').classList.toggle('active', lang === 'tr');
+  document.getElementById('langEN').classList.toggle('active', lang === 'en');
+  document.getElementById('mobileLangTR').classList.toggle('active', lang === 'tr');
+  document.getElementById('mobileLangEN').classList.toggle('active', lang === 'en');
+  
+  document.querySelectorAll('[data-tr]').forEach(el => {
+    const key = lang === 'tr' ? 'data-tr' : 'data-en';
+    const value = el.getAttribute(key);
+    if (value) {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        if (el.hasAttribute(key + '-placeholder')) {
+          el.placeholder = el.getAttribute(key + '-placeholder');
+        }
+      } else if (el.tagName === 'OPTION') {
+        el.textContent = value;
+      } else {
+        const htmlMatch = el.innerHTML.match(/<[^>]+>/g);
+        if (htmlMatch) {
+          el.innerHTML = value;
+        } else {
+          el.textContent = value;
+        }
+      }
+    }
+  });
+  
+  if (CURRENT_SECTION === 'library') renderLibrary();
+  if (CURRENT_SECTION === 'articles') renderArticles();
+  if (CURRENT_SECTION === 'events') renderEventsGate();
+  if (CURRENT_SECTION === 'casinos') renderCasinos();
+  if (CURRENT_SECTION === 'about') renderAbout();
+  
+  renderCollectionOptions();
+}
+
+/* KEYS & SEED */
+const LS_BOOKS='flipbook_library_books_v5';
+const LS_COLS='flipbook_library_cols_v1';
+const LS_USERS='merit_users_v1';
+const SS_SESS='merit_session_v1';
+const LS_CASINO_DESC='casino_descs_v1';
+const LS_CASINO_INFO='casino_infos_v1';
+const LS_CASINO_TITLES='casino_titles_v1';
+const LS_CASINO_ORDER='casino_order_v1';
+
+const seedCollections=[{id:'genel',name:'Genel'}];
+const seedBooks=[];
+
+function defaultPdfCover(){
+  const svg=encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800"><rect width="100%" height="100%" fill="#0f1730"/><rect x="40" y="40" width="520" height="720" rx="24" ry="24" fill="none" stroke="#22314f" stroke-width="8"/><text x="300" y="360" font-size="120" text-anchor="middle" fill="#8aa0c4" font-family="Segoe UI, Arial">PDF</text><text x="300" y="470" font-size="22" text-anchor="middle" fill="#8aa0c4" font-family="Segoe UI, Arial">Önizleme</text></svg>`);
+  return `data:image/svg+xml;charset=utf-8,${svg}`;
+}
+
+/* AUTH */
+async function pbkdf2Hash(password,saltB64,iters=120000){
+  const enc=new TextEncoder();
+  const key=await crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveBits']);
+  const salt=Uint8Array.from(atob(saltB64),c=>c.charCodeAt(0));
+  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt,iterations:iters},key,256);
+  return Array.from(new Uint8Array(bits)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function genSaltB64(len=16){const a=new Uint8Array(len);crypto.getRandomValues(a);let s='';for(const b of a)s+=String.fromCharCode(b);return btoa(s)}
+function loadUsers(){try{return JSON.parse(localStorage.getItem(LS_USERS)||'[]')}catch{return[]}}
+function saveUsers(users){localStorage.setItem(LS_USERS,JSON.stringify(users))}
+async function seedUsersIfMissing(){
+  let users=loadUsers(); if(users.length) return;
+  const sa=genSaltB64(), ha=await pbkdf2Hash('admin123',sa);
+  const sg=genSaltB64(), hg=await pbkdf2Hash('guest123',sg);
+  users=[{username:'admin',role:'admin',allowed:['*'],salt:sa,hash:ha,iters:120000},{username:'guest',role:'viewer',allowed:['genel'],salt:sg,hash:hg,iters:120000}];
+  saveUsers(users);
+}
+async function login(username,password){
+  const users=loadUsers(); const u=users.find(x=>x.username===username);
+  if(!u) return null;
+  const calc=await pbkdf2Hash(password,u.salt,u.iters||120000);
+  if(calc!==u.hash) return null;
+  return {username:u.username,role:u.role,allowed:u.allowed};
+}
+function saveSession(sess){sessionStorage.setItem(SS_SESS,JSON.stringify(sess))}
+function loadSession(){try{return JSON.parse(sessionStorage.getItem(SS_SESS)||'null')}catch{return null}}
+function clearSession(){sessionStorage.removeItem(SS_SESS)}
+
+/* BOOKS / COLS */
+function loadBooks(){try{return JSON.parse(localStorage.getItem(LS_BOOKS)||'[]')}catch{return[]}}
+function saveBooks(){localStorage.setItem(LS_BOOKS,JSON.stringify(BOOKS))}
+function loadCollections(){try{const a=JSON.parse(localStorage.getItem(LS_COLS)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
+function saveCols(){localStorage.setItem(LS_COLS,JSON.stringify(COLS))}
+function ensureSeed(){
+  if(!COLS.length){COLS=seedCollections.slice();saveCols()}
+  const idset=new Set(BOOKS.map(b=>b.id));
+  for(const b of seedBooks){ 
+    if(!idset.has(b.id)) {
+      if(!b.lang) b.lang='tr';
+      BOOKS.push(b);
+    }
+  }
+  saveBooks();
+}
+
+/* STATE + PERMS */
+let BOOKS=loadBooks();
+let COLS=loadCollections();
+ensureSeed();
+
+let CURRENT=null;
+let CURRENT_SECTION='home';
+let currentLibFolder='dokumanlar';
+let aboutTab='hist';
+let eventsTab='turnuvalar';
+let LAST_LIST_SECTION='articles';
+let SELECTED_COL_FILTER = null;
+
+function isAllowedCollection(colId){
+  if(!CURRENT) return false;
+  if(CURRENT.allowed?.includes('*')) return true;
+  if(!colId) return false;
+  return CURRENT.allowed.includes(colId);
+}
+function can(action){
+  if(!CURRENT) return false;
+  if(CURRENT.role==='admin') return true;
+  if(CURRENT.role==='editor'){ return ['view','add_item','delete_item','manage_cols'].includes(action); }
+  if(CURRENT.role==='viewer'){ return action==='view'; }
+  return false;
+}
+
+/* IndexedDB */
+const DB_NAME='merit_lib', DB_STORE='pdfs';
+function openDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open(DB_NAME,1);
+    req.onupgradeneeded=e=>{
+      const db=e.target.result;
+      if(!db.objectStoreNames.contains(DB_STORE)){
+        db.createObjectStore(DB_STORE,{keyPath:'id'});
+      }
+    };
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function idbAddPdf(id, name, blob){
+  const db=await openDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(DB_STORE,'readwrite');
+    tx.objectStore(DB_STORE).put({id,name,blob});
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  });
+}
+async function idbGetPdf(id){
+  const db=await openDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(DB_STORE,'readonly');
+    const rq=tx.objectStore(DB_STORE).get(id);
+    rq.onsuccess=()=>resolve(rq.result);
+    rq.onerror=()=>reject(rq.error);
+  });
+}
+async function idbGetAll(){
+  const db=await openDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(DB_STORE,'readonly');
+    const rq=tx.objectStore(DB_STORE).getAll();
+    rq.onsuccess=()=>resolve(rq.result||[]);
+    rq.onerror=()=>reject(rq.error);
+  });
+}
+async function idbClear(){
+  const db=await openDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(DB_STORE,'readwrite');
+    tx.objectStore(DB_STORE).clear();
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  });
+}
+
+async function hydrateIdbPdfs(){
+  for(const b of BOOKS){
+    if(b.type==='pdf-idb' && b.idb && !b._blobUrl){
+      try{
+        const rec=await idbGetPdf(b.idb);
+        if(rec?.blob){
+          b._blobUrl=URL.createObjectURL(rec.blob);
+          b.path=b._blobUrl;
+          b._blob=true;
+        }
+      }catch(e){
+        console.error('PDF yüklenirken hata:', e);
+      }
+    }
+  }
+}
+
+/* UI refs */
+const q = sel => document.querySelector(sel);
+const gridLib=q('#libraryGrid'), gridArt=q('#articlesGrid'), libV=q('#libraryView'), artV=q('#articlesView'), viewV=q('#viewerView'), frame=q('#viewerFrame');
+const backBtn=q('#backBtn'), menuBtn=q('#menuBtn'), openNew=q('#openNewTab'), viewTitle=q('#viewTitle');
+const addBookBtn=q('#addBookBtn'), fillTplBtn=q('#fillTpl'), addPanel=q('#addPanel'), addCancel=q('#addCancel');
+const inputType=q('#bType'), inputId=q('#bId'), inputTitle=q('#bTitle'), inputCover=q('#bCover'), inputPath=q('#bPath'), inputCol=q('#bCol'), inputFolder=q('#bFolder'), inputLang=q('#bLang'), inputEventSub=q('#bEventSub');
+const eventSubfolderRow=q('#eventSubfolderRow');
+const colFilter=q('#colFilter');
+const whoami=q('#whoami'), logoutBtn=q('#logoutBtn'), loginTopBtn=q('#loginTopBtn'), usersBtn=q('#usersBtn');
+const loginWrap=q('#login'), lgUser=q('#lgUser'), lgPass=q('#lgPass'), lgBtn=q('#lgBtn'), lgErr=q('#lgErr');
+const usersPanel=q('#usersPanel'), usersList=q('#usersList');
+const euDlg=q('#editUserDlg'), euUser=q('#euUser'), euRole=q('#euRole'), euAllowedBox=q('#euAllowed'), euClose=q('#euClose'), euSave=q('#euSave');
+const nuAllowedBox=q('#nuAllowed');
+const collectionsToolbar=document.getElementById('collectionsToolbar');
+const allowedCollectionsBar=document.getElementById('allowedCollectionsBar');
+
+const navHome=document.getElementById('navHome');
+const navAbout=document.getElementById('navAbout');
+const navCasinos=document.getElementById('navCasinos');
+const navEvents=document.getElementById('navEvents');
+const navLibrary=document.getElementById('navLibrary');
+const navArticles=document.getElementById('navArticles');
+
+const mNavHome=document.getElementById('mNavHome');
+const mNavAbout=document.getElementById('mNavAbout');
+const mNavCasinos=document.getElementById('mNavCasinos');
+const mNavEvents=document.getElementById('mNavEvents');
+const mNavLibrary=document.getElementById('mNavLibrary');
+const mNavArticles=document.getElementById('mNavArticles');
+const mNavSettings=document.getElementById('mNavSettings');
+const mNavHelp=document.getElementById('mNavHelp');
+const mNavLogout=document.getElementById('mNavLogout');
+const mNavLogin=document.getElementById('mNavLogin');
+
+const homeView=document.getElementById('homeView');
+const aboutView=document.getElementById('aboutView');
+const casinosView=document.getElementById('casinosView');
+const eventsView=document.getElementById('eventsView');
+const eventsGate=document.getElementById('eventsGate');
+
+const artSearch=q('#artSearch');
+const libSearch=q('#libSearch');
+
+const ciDlg=document.getElementById('casinoInfoDlg');
+const ciText=document.getElementById('casinoInfoText');
+const ciClose=document.getElementById('ciClose');
+const ciSave=document.getElementById('ciSave');
+
+const dropZone=q('#dropZone');
+const toastBox=q('#toast');
+
+const permaPdfInput=q('#permaPdfInput');
+const coverImageInput=q('#coverImageInput');
+const permaPdfBtn=q('#permaPdfBtn');
+const toggleAddBook=q('#toggleAddBook');
+const toggleAddPdf=q('#toggleAddPdf');
+
+const backupBtn=q('#backupBtn');
+const restoreBtn=q('#restoreBtn');
+const backupFileInput=q('#backupFileInput');
+
+const settingsMenu=document.getElementById('settingsMenu');
+const settingsDropdown=document.getElementById('settingsDropdown');
+const manageColsBtn=document.getElementById('manageColsBtn');
+const manageColsDlg=document.getElementById('manageColsDlg');
+const collectionsList=document.getElementById('collectionsList');
+const addNewColBtn=document.getElementById('addNewColBtn');
+const closeColsBtn=document.getElementById('closeColsBtn');
+
+const hamburger=document.getElementById('hamburger');
+const mobileMenu=document.getElementById('mobileMenu');
+const mobileOverlay=document.getElementById('mobileOverlay');
+const mobileMenuUser=document.getElementById('mobileMenuUser');
+
+/* Hamburger Menu */
+hamburger.onclick=()=>{
+  hamburger.classList.toggle('active');
+  mobileMenu.classList.toggle('show');
+  mobileOverlay.classList.toggle('show');
+};
+mobileOverlay.onclick=()=>{
+  hamburger.classList.remove('active');
+  mobileMenu.classList.remove('show');
+  mobileOverlay.classList.remove('show');
+};
+
+function closeMobileMenu(){
+  hamburger.classList.remove('active');
+  mobileMenu.classList.remove('show');
+  mobileOverlay.classList.remove('show');
+}
+
+/* NAV */
+function setActiveTab(btn){
+  [navHome,navAbout,navCasinos,navEvents,navArticles,navLibrary].forEach(b=>b.classList.remove('active'));
+  [mNavHome,mNavAbout,mNavCasinos,mNavEvents,mNavArticles,mNavLibrary].forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggleTopbarForSection(sec){
+  const showLibTools=(sec==='library') && !!CURRENT;
+  if(collectionsToolbar) collectionsToolbar.style.display=showLibTools?'':'none';
+  
+  // İçerik ekleme butonlarını sadece ilgili sekmelerde göster
+  const showAddButtons = (sec==='library' || sec==='articles' || sec==='events') && !!CURRENT && can('add_item');
+  if(permaPdfBtn) permaPdfBtn.style.display = showAddButtons ? '' : 'none';
+  if(toggleAddBook) toggleAddBook.style.display = showAddButtons ? '' : 'none';
+  if(toggleAddPdf) toggleAddPdf.style.display = showAddButtons ? '' : 'none';
+}
+function updateSearchVisibility(){
+  if(artSearch?.parentElement) artSearch.parentElement.style.display = CURRENT ? 'flex' : 'none';
+  if(libSearch?.parentElement) libSearch.parentElement.style.display = CURRENT ? 'flex' : 'none';
+  if(dropZone){
+    dropZone.style.display = 'none';
+    dropZone.setAttribute('aria-hidden', 'true');
+  }
+}
+
+function renderAllowedCollectionsBar(){
+  if(!CURRENT || CURRENT_SECTION!=='library') {
+    allowedCollectionsBar.innerHTML='';
+    return;
+  }
+  
+  const allowed = CURRENT.allowed?.includes('*') 
+    ? COLS.map(c=>c.id) 
+    : (CURRENT.allowed || []);
+  
+  if(!allowed.length) {
+    allowedCollectionsBar.innerHTML='';
+    return;
+  }
+  
+  allowedCollectionsBar.innerHTML='';
+  
+  for(const colId of allowed){
+    const col = COLS.find(c=>c.id===colId);
+    if(!col) continue;
+    
+    const chip = document.createElement('button');
+    chip.className='collectionChip';
+    chip.textContent=col.name;
+    chip.dataset.colId=colId;
+    
+    if(SELECTED_COL_FILTER===colId) chip.classList.add('active');
+    
+    chip.onclick=()=>{
+      SELECTED_COL_FILTER = (SELECTED_COL_FILTER===colId) ? null : colId;
+      renderAllowedCollectionsBar();
+      renderLibrary();
+    };
+    
+    allowedCollectionsBar.appendChild(chip);
+  }
+}
+
+function showSection(sec){
+  CURRENT_SECTION=sec;
+  homeView.style.display   =(sec==='home')?'block':'none';
+  aboutView.style.display  =(sec==='about')?'block':'none';
+  casinosView.style.display=(sec==='casinos')?'block':'none';
+  eventsView.style.display =(sec==='events')?'block':'none';
+  artV.style.display       =(sec==='articles')?'block':'none';
+  libV.style.display       =(sec==='library')?'block':'none';
+  if(sec!=='library' && sec!=='articles'){ viewV.style.display='none'; backBtn.classList.add('hidden'); }
+  toggleTopbarForSection(sec);
+  updateSearchVisibility();
+
+  if(sec==='home')    setActiveTab(navHome);
+  if(sec==='about')   { setActiveTab(navAbout); renderAbout(); }
+  if(sec==='casinos') { setActiveTab(navCasinos); renderCasinos(); }
+  if(sec==='events')  { setActiveTab(navEvents); renderEventsGate(); }
+  if(sec==='articles'){ setActiveTab(navArticles); renderArticles(); }
+  if(sec==='library'){ 
+    setActiveTab(navLibrary); 
+    currentLibFolder='dokumanlar'; 
+    SELECTED_COL_FILTER=null;
+    renderAllowedCollectionsBar();
+    renderLibrary(); 
+    backBtn.classList.add('hidden'); 
+  }
+  
+  closeMobileMenu();
+}
+
+navHome.onclick   = ()=>showSection('home');
+navAbout.onclick  = ()=>showSection('about');
+navCasinos.onclick= ()=>showSection('casinos');
+navEvents.onclick = ()=>showSection('events');
+navArticles.onclick=()=>showSection('articles');
+navLibrary.onclick= ()=>showSection('library');
+
+mNavHome.onclick   = ()=>showSection('home');
+mNavAbout.onclick  = ()=>showSection('about');
+mNavCasinos.onclick= ()=>showSection('casinos');
+mNavEvents.onclick = ()=>showSection('events');
+mNavArticles.onclick=()=>showSection('articles');
+mNavLibrary.onclick= ()=>showSection('library');
+
+/* About tabs */
+const abHist=document.getElementById('abHist');
+const abStaff=document.getElementById('abStaff');
+const abMgmt=document.getElementById('abMgmt');
+const aboutBody=document.getElementById('aboutBody');
+[abHist,abStaff,abMgmt].forEach(b=>b?.addEventListener('click',()=>{
+  [abHist,abStaff,abMgmt].forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  aboutTab=(b===abHist?'hist':b===abStaff?'staff':'mgmt');
+  renderAbout();
+}));
+function renderAbout(){
+  if(aboutTab==='hist'){ 
+    aboutBody.innerHTML=`<h3>${t('history')}</h3><p>${t('contentComingSoon')}</p>`; 
+  }
+  else if(aboutTab==='staff'){ 
+    aboutBody.innerHTML=`<h3>${t('teachingStaff')}</h3><p>${t('contentComingSoon')}</p>`; 
+  }
+  else{ 
+    aboutBody.innerHTML=`<h3>${t('managementTeam')}</h3><p>${t('contentComingSoon')}</p>`; 
+  }
+}
+
+/* Etkinlikler */
+function renderEventsGate(){
+  if(!CURRENT){
+    eventsGate.innerHTML=`
+      <div class="alert">
+        <b>${t('events')}</b> ${t('eventsLoginRequired')}
+        <div style="margin-top:8px"><button id="evLogin" class="btn" type="button">${t('loginButton')}</button></div>
+      </div>`;
+    document.getElementById('evLogin').onclick=()=>{ loginWrap.classList.remove('hidden'); loginWrap.classList.add('anim'); setTimeout(()=>loginWrap.classList.remove('anim'),220); };
+    return;
+  }
+  const tabLabel = eventsTab==='turnuvalar' ? t('tournaments') : t('competitions');
+  eventsGate.innerHTML=`
+    <div class="eventsTabsContainer">
+      <div class="searchRow">
+        <button id="evTurn" class="tab small ${eventsTab==='turnuvalar'?'active':''}">${t('tournaments')}</button>
+        <button id="evRace" class="tab small ${eventsTab==='yarismalar'?'active':''}">${t('competitions')}</button>
+      </div>
+    </div>
+    <div id="eventsBody" class="inner">
+      <div id="eventsGrid" class="grid"></div>
+    </div>`;
+  document.getElementById('evTurn').onclick=()=>{eventsTab='turnuvalar';renderEventsGate();renderEventsContent()};
+  document.getElementById('evRace').onclick=()=>{eventsTab='yarismalar';renderEventsGate();renderEventsContent()};
+  renderEventsContent();
+}
+
+function renderEventsContent(){
+  const grid = document.getElementById('eventsGrid');
+  if(!grid) return;
+  
+  let list=BOOKS.filter(b=>(b.folder||'makaleler')==='etkinlikler');
+  list = list.filter(b=>b.lang===CURRENT_LANG);
+  list = list.filter(b=>isAllowedCollection(b.collectionId));
+  list = list.filter(b=>(b.eventSub||'turnuvalar')===eventsTab);
+  
+  if(!list.length){ 
+    grid.innerHTML=`<p style="opacity:.8">${t('noItemsOrNoPermission')}</p>`; 
+    return; 
+  }
+  
+  grid.innerHTML='';
+  for(const b of list){ grid.appendChild(card(b)); }
+}
+
+/* Collections */
+function renderCollectionOptions(){
+  colFilter.innerHTML='';
+  if(!CURRENT){ colFilter.add(new Option('—','')); return; }
+  colFilter.add(new Option(t('allCollections'),''));
+  for(const c of COLS){
+    if(CURRENT.allowed?.includes('*') || CURRENT.allowed?.includes(c.id)){
+      colFilter.add(new Option(c.name,c.id));
+    }
+  }
+
+  inputCol.innerHTML='';
+  for(const c of COLS){
+    if(!CURRENT || CURRENT.allowed?.includes('*') || CURRENT.allowed?.includes(c.id)) {
+      inputCol.add(new Option(c.name,c.id));
+    }
+  }
+  buildAllowedChecklist(nuAllowedBox, []);
+}
+
+/* Makaleler */
+function renderArticles(){
+  if(!CURRENT){
+    gridArt.innerHTML=`
+      <div class="alert">
+        <b>${t('articles')}</b> ${t('loginRequired')}
+        <div style="margin-top:8px"><button id="promptLogin" class="btn" type="button">${t('loginButton')}</button></div>
+      </div>`;
+    const p=document.getElementById('promptLogin'); 
+    if(p) p.onclick=()=>{ loginWrap.classList.remove('hidden'); loginWrap.classList.add('anim'); setTimeout(()=>loginWrap.classList.remove('anim'),220); };
+    return;
+  }
+  
+  const qtxt=(artSearch.value||'').trim().toLowerCase();
+  let list=BOOKS.filter(b=>(b.folder||'makaleler')==='makaleler');
+  list = list.filter(b=>b.lang===CURRENT_LANG);
+  if(qtxt) list=list.filter(b=> (b.title||'').toLowerCase().includes(qtxt) || (b.id||'').toLowerCase().includes(qtxt) );
+  if(!list.length){ gridArt.innerHTML=`<p style="opacity:.8">${t('noResults')}</p>`; return; }
+  gridArt.innerHTML='';
+  for(const b of list){ gridArt.appendChild(card(b)); }
+}
+
+/* Kütüphane */
+async function renderLibrary(){
+  if(!CURRENT){
+    gridLib.innerHTML=`
+      <div class="alert">
+        <b>${t('documents')}</b> ${t('loginRequired')}
+        <div style="margin-top:8px"><button id="promptLogin" class="btn" type="button">${t('loginButton')}</button></div>
+      </div>`;
+    const p=document.getElementById('promptLogin'); 
+    if(p) p.onclick=()=>{ loginWrap.classList.remove('hidden'); loginWrap.classList.add('anim'); setTimeout(()=>loginWrap.classList.remove('anim'),220); };
+    return;
+  }
+  await hydrateIdbPdfs();
+  const qtxt=(libSearch.value||'').trim().toLowerCase();
+  let list=BOOKS
+    .filter(b=>(b.folder||'makaleler')==='dokumanlar')
+    .filter(b=>isAllowedCollection(b.collectionId))
+    .filter(b=>b.lang===CURRENT_LANG);
+  
+  if(SELECTED_COL_FILTER) {
+    list=list.filter(b=>b.collectionId===SELECTED_COL_FILTER);
+  }
+  
+  if(colFilter.value) list=list.filter(b=>b.collectionId===colFilter.value);
+  if(qtxt) list=list.filter(b=> (b.title||'').toLowerCase().includes(qtxt) || (b.id||'').toLowerCase().includes(qtxt) );
+  gridLib.innerHTML='';
+  if(!list.length){ gridLib.innerHTML=`<p style="opacity:.8">${t('noItemsOrNoPermission')}</p>`; return; }
+  for(const b of list){ gridLib.appendChild(card(b)); }
+}
+
+function card(b){
+  const el=document.createElement('article'); el.className='card';
+  
+  const coverContainer = document.createElement('div');
+  coverContainer.className = 'cover-container';
+  coverContainer.style.position = 'relative';
+  
+  const img=document.createElement('img'); img.className='cover'; img.loading='lazy';
+  
+  let coverUrl = b.cover || (b.type.includes('pdf') ? defaultPdfCover() : '');
+  if (b.cover && b.cover.startsWith('data:')) {
+    coverUrl = b.cover;
+  } else if (b.cover) {
+    coverUrl = encodeURI(b.cover);
+  }
+  
+  img.src = coverUrl;
+  img.alt = b.title || 'Kapak';
+  img.onerror = function() {
+    this.src = defaultPdfCover();
+  };
+
+  if (can('add_item')) {
+    const editOverlay = document.createElement('div');
+    editOverlay.className = 'cover-edit-overlay';
+    editOverlay.textContent = t('editCover');
+    editOverlay.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      editBookCover(b);
+    };
+    coverContainer.appendChild(editOverlay);
+  }
+
+  coverContainer.appendChild(img);
+  el.appendChild(coverContainer);
+
+  const meta=document.createElement('div'); meta.className='meta';
+  const t2=document.createElement('div'); t2.className='title'; t2.textContent=b.title||'—';
+  const badges=document.createElement('div'); badges.className='badges';
+  const tag=document.createElement('span'); 
+  tag.className='tag ' + (b.type.includes('pdf')?'pdf':'flip'); 
+  tag.textContent=(b.type.includes('pdf')?t('pdf'):t('flipbook'));
+  badges.appendChild(tag);
+
+  const row=document.createElement('div'); row.className='row';
+  if(can('add_item')){
+    const folderSel=document.createElement('select');
+    const opt1=new Option(t('articles'),'makaleler');
+    const opt2=new Option(t('documents'),'dokumanlar');
+    const opt3=new Option(t('events'),'etkinlikler');
+    folderSel.add(opt1); folderSel.add(opt2); folderSel.add(opt3);
+    folderSel.value=b.folder||'makaleler';
+    const saveFolder=document.createElement('button'); 
+    saveFolder.className='btn'; 
+    saveFolder.textContent=t('moveBtn');
+    saveFolder.onclick=()=>{ 
+      b.folder=folderSel.value; 
+      saveBooks(); 
+      if(CURRENT_SECTION==='library') renderLibrary();
+      else if(CURRENT_SECTION==='articles') renderArticles();
+      else if(CURRENT_SECTION==='events') renderEventsContent();
+    };
+
+    const colSel=document.createElement('select');
+    for(const c of COLS){ 
+      if(CURRENT?.allowed?.includes('*') || CURRENT?.allowed?.includes(c.id)) 
+        colSel.add(new Option(c.name,c.id)); 
+    }
+    if(!colSel.options.length){ 
+      const o=new Option(t('noAllowedCollections'),''); 
+      o.disabled=true; 
+      colSel.add(o); 
+    }
+    colSel.value=b.collectionId || (colSel.options[0]?.value||'');
+    const saveCol=document.createElement('button'); 
+    saveCol.className='btn'; 
+    saveCol.textContent=t('assignBtn');
+    saveCol.onclick=()=>{ 
+      if(!colSel.value) return; 
+      if(!(CURRENT.allowed?.includes('*') || CURRENT.allowed?.includes(colSel.value))) 
+        return alert(t('noPermission')); 
+      b.collectionId=colSel.value; 
+      saveBooks(); 
+      if(CURRENT_SECTION==='library') renderLibrary();
+      else if(CURRENT_SECTION==='articles') renderArticles();
+      else if(CURRENT_SECTION==='events') renderEventsContent();
+    };
+
+    const langSel=document.createElement('select');
+    langSel.add(new Option('TR','tr'));
+    langSel.add(new Option('EN','en'));
+    langSel.value=b.lang||'tr';
+    const saveLang=document.createElement('button');
+    saveLang.className='btn';
+    saveLang.textContent=t('setLang');
+    saveLang.onclick=()=>{
+      b.lang=langSel.value;
+      saveBooks();
+      if(CURRENT_SECTION==='library') renderLibrary();
+      else if(CURRENT_SECTION==='articles') renderArticles();
+      else if(CURRENT_SECTION==='events') renderEventsContent();
+    };
+
+    row.appendChild(folderSel); row.appendChild(saveFolder); 
+    row.appendChild(colSel); row.appendChild(saveCol);
+    row.appendChild(langSel); row.appendChild(saveLang);
+  }
+
+  const acts=document.createElement('div'); acts.className='actions';
+  const openBtn=btn(t('openIframe'), ()=>openItem(b));
+  acts.appendChild(openBtn);
+  if(can('delete_item')) acts.appendChild(btn(t('delete'), ()=>removeItem(b.id), 'danger'));
+
+  meta.appendChild(t2);
+  el.appendChild(meta); el.appendChild(badges);
+  if(row.children.length) el.appendChild(row);
+  el.appendChild(acts);
+  return el;
+}
+function btn(txt, fn, extra){ 
+  const a=document.createElement('button'); 
+  a.className='btn'+(extra?' '+extra:''); 
+  a.textContent=txt; 
+  a.type='button'; 
+  a.onclick=fn; 
+  return a; 
+}
+
+function editBookCover(book) {
+  if (!can('add_item')) return alert(t('noPermission'));
+  
+  coverImageInput.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+      alert('Lütfen bir resim dosyası seçin.');
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      book.cover = event.target.result;
+      saveBooks();
+      
+      if (CURRENT_SECTION === 'library') renderLibrary();
+      if (CURRENT_SECTION === 'articles') renderArticles();
+      if (CURRENT_SECTION === 'events') renderEventsContent();
+      
+      showToast('Kapak güncellendi');
+    };
+    reader.readAsDataURL(file);
+    
+    e.target.value = '';
+  };
+  
+  coverImageInput.click();
+}
+
+/* Viewer */
+function goBackFromViewer(){
+  viewV.style.display='none';
+  frame.removeAttribute('src');
+  const u=new URL(location.href); u.searchParams.delete('book'); history.replaceState({},'',u);
+  if(LAST_LIST_SECTION==='articles') showSection('articles'); 
+  else if(LAST_LIST_SECTION==='events') showSection('events');
+  else showSection('library');
+}
+function openItem(b){
+  LAST_LIST_SECTION = (CURRENT_SECTION==='articles') ? 'articles' : (CURRENT_SECTION==='events' ? 'events' : 'library');
+  homeView.style.display='none'; aboutView.style.display='none'; casinosView.style.display='none'; 
+  eventsView.style.display='none'; artV.style.display='none'; libV.style.display='none';
+  viewV.style.display='grid'; backBtn.classList.remove('hidden');
+  frame.src = b._blob ? b.path : encodeURI(b.path);
+  openNew.href = b._blob ? b.path : encodeURI(b.path);
+  viewTitle.textContent = b.title || '';
+  const u=new URL(location.href); u.searchParams.set('book',b.id); history.replaceState({},'',u);
+  localStorage.setItem('lastBookId', b.id);
+}
+function removeItem(id){
+  if(!can('delete_item')) return alert(t('noPermission'));
+  const it=BOOKS.find(x=>x.id===id); if(!it) return;
+  if(!confirm(t('confirmDelete'))) return;
+  if(it._blobUrl){ try{ URL.revokeObjectURL(it._blobUrl); }catch{} }
+  const wasOpen=(localStorage.getItem('lastBookId')===id);
+  BOOKS=BOOKS.filter(x=>x.id!==id); saveBooks();
+  if(CURRENT_SECTION==='library') renderLibrary();
+  else if(CURRENT_SECTION==='articles') renderArticles();
+  else if(CURRENT_SECTION==='events') renderEventsContent();
+  if(wasOpen) goBackFromViewer();
+}
+
+/* Add Item */
+function syncPlaceholders(){
+  if(inputType.value==='pdf'){ 
+    inputCover.placeholder='opsiyonel: books/my-pdf.jpg'; 
+    inputPath.placeholder='books/my-pdf.pdf'; 
+  }
+  else{ 
+    inputCover.placeholder='books/my-book/data/1.jpg'; 
+    inputPath.placeholder='books/my-book/index.html'; 
+  }
+}
+function fillTpl(){
+  const slug=prompt('Kısa ad (slug): ör: marketing2025 / catalog-pdf'); if(!slug) return;
+  inputId.value=slug; 
+  inputTitle.value=slug.replace(/[-_]/g,' ').replace(/\b\w/g,m=>m.toUpperCase());
+  if(inputType.value==='pdf'){ 
+    inputCover.value=''; 
+    inputPath.value=`books/${slug}.pdf`; 
+  }
+  else{ 
+    inputCover.value=`books/${slug}/data/1.jpg`; 
+    inputPath.value=`books/${slug}/index.html`; 
+  }
+}
+function addItem(){
+  if(!can('add_item')) return alert(t('noPermission'));
+  const type=(inputType.value||'flipbook');
+  const id=(inputId.value||'').trim(), title=(inputTitle.value||'').trim();
+  let cover=(inputCover.value||'').trim(); 
+  let path=(inputPath.value||'').trim();
+
+  path = path.replace(/\\/g,'/'); 
+
+  const collectionId = inputCol.value;
+  const folder = inputFolder.value;
+  const lang = inputLang.value;
+  const eventSub = (folder === 'etkinlikler') ? inputEventSub.value : undefined;
+  
+  if(!id||!title||!path) return alert('ID, Başlık ve Yol zorunlu.');
+  if(!collectionId) return alert('Koleksiyon seç.');
+  if(BOOKS.some(b=>b.id===id)) return alert('Bu ID zaten var.');
+
+  if(type==='pdf' && !/\.pdf($|\?)/i.test(path.toLowerCase())){
+    console.warn("Uyarı: Yol .pdf ile bitmiyor gibi görünüyor ama yine de kabul edildi:", path);
+  }
+  if(type==='pdf' && !cover) cover = defaultPdfCover();
+
+  if(type==='flipbook' && !/\.html($|\?)/i.test(path.toLowerCase())){
+    console.warn("Uyarı: Flipbook yolu .html ile bitmiyor gibi görünüyor ama yine de kabul edildi:", path);
+  }
+
+  if(!(CURRENT.allowed?.includes('*') || CURRENT.allowed?.includes(collectionId))) 
+    return alert(t('noPermission'));
+
+  const newBook = {id,title,type,cover,path,collectionId,folder,lang};
+  if(eventSub) newBook.eventSub = eventSub;
+  
+  BOOKS.push(newBook);
+  saveBooks(); 
+  if(CURRENT_SECTION==='library') renderLibrary();
+  else if(CURRENT_SECTION==='articles') renderArticles();
+  else if(CURRENT_SECTION==='events') renderEventsContent();
+  inputId.value=inputTitle.value=inputCover.value=inputPath.value=''; 
+  addPanel.style.display='none';
+}
+addCancel.onclick=()=>{ addPanel.style.display='none'; };
+
+function showToast(msg){
+  if(!toastBox) return;
+  const el=document.createElement('div');
+  el.className='toastItem'; el.textContent=msg;
+  toastBox.appendChild(el);
+  setTimeout(()=>{ 
+    el.style.transition='opacity .4s'; 
+    el.style.opacity='0'; 
+    setTimeout(()=>el.remove(),450); 
+  },1400);
+}
+
+if(dropZone){
+  ;['dragenter','dragover'].forEach(evt=>{
+    dropZone.addEventListener(evt, e=>{ 
+      e.preventDefault(); 
+      e.stopPropagation(); 
+      dropZone.classList.add('active'); 
+    });
+  });
+  ;['dragleave','drop'].forEach(evt=>{
+    dropZone.addEventListener(evt, e=>{ 
+      e.preventDefault(); 
+      e.stopPropagation(); 
+      dropZone.classList.remove('active'); 
+    });
+  });
+  dropZone.addEventListener('drop', e=>{
+    const files = Array.from(e.dataTransfer?.files||[]);
+    if(!files.length) return;
+    handlePermaPdfFiles(files);
+  });
+}
+
+async function handlePermaPdfFiles(files){
+  if(!(CURRENT && can('add_item'))) return;
+  const colId = SELECTED_COL_FILTER || (colFilter.value || (COLS[0]?.id||'genel'));
+  if(!(CURRENT.allowed?.includes('*') || CURRENT.allowed?.includes(colId))) 
+    return alert(t('noPermission'));
+
+  let added = 0;
+  
+  showToast(`${files.length} PDF işleniyor...`);
+  
+  for(const f of files){
+    if(f.type !== 'application/pdf') continue;
+    
+    try {
+      const idb = 'pdfid-' + Date.now() + '-' + Math.random().toString(36).slice(2,7);
+      await idbAddPdf(idb, f.name, f);
+      
+      const id = 'pdf-' + Date.now() + '-' + Math.random().toString(36).slice(2,5);
+      const title = f.name.replace(/\.pdf$/i, '');
+      
+      let coverUrl = defaultPdfCover();
+      try {
+        const pdfUrl = URL.createObjectURL(f);
+        const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 0.3 });
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        
+        await page.render({
+          canvasContext: context,
+          viewport: viewport
+        }).promise;
+        
+        coverUrl = canvas.toDataURL('image/jpeg', 0.7);
+        URL.revokeObjectURL(pdfUrl);
+      } catch(e) {
+        console.warn("PDF kapağı oluşturulamadı, default kullanılıyor", e);
+      }
+      
+      const item = {
+        id, 
+        title, 
+        type: 'pdf-idb', 
+        cover: coverUrl, 
+        path: '', 
+        idb, 
+        collectionId: colId, 
+        folder: 'dokumanlar',
+        lang: CURRENT_LANG
+      };
+      
+      BOOKS.push(item); 
+      added++;
+      
+      if (added % 5 === 0) {
+        await renderLibrary();
+      }
+    } catch(error) {
+      console.error('PDF yükleme hatası:', error);
+    }
+  }
+  
+  saveBooks();
+  await renderLibrary();
+  if(added) showToast(`${added} ${t('permanentPdfAdded')}`);
+}
+
+/* Koleksiyon Yönetimi Ekranı */
+function openManageCollections(){
+  if(!can('manage_cols') && CURRENT.role!=='admin') return alert(t('noPermission'));
+  renderManageCollections();
+  manageColsDlg.classList.remove('hidden'); 
+  manageColsDlg.classList.add('anim'); 
+  setTimeout(()=>manageColsDlg.classList.remove('anim'),220);
+}
+function closeManageCollections(){
+  manageColsDlg.classList.add('hidden');
+}
+function renderManageCollections(){
+  collectionsList.innerHTML='';
+  for(const c of COLS){
+    const item=document.createElement('div');
+    item.className='collectionItem';
+    
+    const name=document.createElement('div');
+    name.className='collectionName';
+    name.textContent=c.name;
+    
+    const editBtn=document.createElement('button');
+    editBtn.className='btn';
+    editBtn.textContent=t('edit');
+    editBtn.onclick=()=>{
+      const newName=prompt(CURRENT_LANG==='tr'?'Yeni isim:':'New name:', c.name);
+      if(newName && newName.trim()){
+        c.name=newName.trim();
+        saveCols();
+        renderManageCollections();
+        renderCollectionOptions();
+        renderAllowedCollectionsBar();
+      }
+    };
+    
+    const delBtn=document.createElement('button');
+    delBtn.className='btn danger';
+    delBtn.textContent=t('delete');
+    delBtn.onclick=()=>{
+      const confirmMsg = CURRENT_LANG==='tr' 
+        ? `"${c.name}" koleksiyonunu silmek istediğinize emin misiniz?`
+        : `Are you sure you want to delete collection "${c.name}"?`;
+      if(!confirm(confirmMsg)) return;
+      COLS=COLS.filter(x=>x.id!==c.id);
+      saveCols();
+      for(const b of BOOKS){ if(b.collectionId===c.id) delete b.collectionId; }
+      saveBooks();
+      renderManageCollections();
+      renderCollectionOptions();
+      renderAllowedCollectionsBar();
+      if(CURRENT_SECTION==='library') renderLibrary();
+    };
+    
+    item.appendChild(name);
+    item.appendChild(editBtn);
+    item.appendChild(delBtn);
+    collectionsList.appendChild(item);
+  }
+}
+
+addNewColBtn.onclick=()=>{
+  const name=prompt(CURRENT_LANG==='tr'?'Yeni koleksiyon adı:':'New collection name:');
+  if(!name || !name.trim()) return;
+  const id=name.toLowerCase().trim().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'') || ('col-'+Date.now());
+  if(COLS.some(c=>c.id===id)) return alert(CURRENT_LANG==='tr'?'Bu isim zaten var!':'This name already exists!');
+  COLS.push({id,name:name.trim()});
+  saveCols();
+  renderManageCollections();
+  renderCollectionOptions();
+  renderAllowedCollectionsBar();
+};
+closeColsBtn.onclick=closeManageCollections;
+
+/* Allowed checklist */
+function buildAllowedChecklist(container, selectedAllowed){
+  container.innerHTML='';
+  const allRow=document.createElement('label');
+  const allChk=document.createElement('input');
+  allChk.type='checkbox'; allChk.className='allowed-all';
+  allChk.checked=Array.isArray(selectedAllowed) && selectedAllowed.includes('*');
+  allRow.appendChild(allChk); 
+  allRow.appendChild(document.createTextNode(' '+t('allColsLabel')));
+  container.appendChild(allRow);
+
+  for(const c of COLS){
+    const lb=document.createElement('label');
+    const chk=document.createElement('input');
+    chk.type='checkbox'; chk.value=c.id; chk.dataset.item='1';
+    chk.checked=allChk.checked ? true : (Array.isArray(selectedAllowed) && selectedAllowed.includes(c.id));
+    lb.appendChild(chk); lb.appendChild(document.createTextNode(' '+c.name));
+    container.appendChild(lb);
+  }
+  function sync(){
+    const all=allChk.checked;
+    container.querySelectorAll('input[type=checkbox][data-item]').forEach(ch=>{
+      ch.disabled=all; if(all) ch.checked=true;
+    });
+  }
+  allChk.onchange=sync; sync();
+}
+function collectAllowed(container){
+  const all=container.querySelector('.allowed-all');
+  if(all && all.checked) return ['*'];
+  const picks=Array.from(container.querySelectorAll('input[type=checkbox][data-item]:checked')).map(x=>x.value);
+  return picks.length ? picks : [];
+}
+
+/* Users */
+function renderUsers(){
+  const users=loadUsers();
+  if(!users.length){ usersList.innerHTML=(CURRENT_LANG==='tr'?'Kullanıcı yok.':'No users.'); return; }
+  const nameById=id=>(COLS.find(c=>c.id===id)?.name || id);
+  usersList.innerHTML=users.map(u=>{
+    const allowedStr=(u.allowed?.includes('*')) ? '*' : (u.allowed||[]).map(nameById).join(', ');
+    const protect=(u.username==='admin') ? 'style="opacity:.7; pointer-events:none"' : '';
+    return `<div style="display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--border)">
+      <div style="min-width:120px"><b>${u.username}</b></div>
+      <div style="min-width:90px"><span class="muted">${u.role}</span></div>
+      <div class="muted" style="flex:1">${CURRENT_LANG==='tr'?'İzinli':'Allowed'}: ${allowedStr || '—'}</div>
+      <button class="btn" ${protect} onclick="openEditUser('${u.username}')">${t('edit')}</button>
+      <button class="btn danger" ${protect} onclick="deleteUser('${u.username}')">${t('delete')}</button>
+    </div>`;
+  }).join('');
+}
+async function addUser(){
+  const username=q('#nuUser').value.trim();
+  const password=q('#nuPass').value;
+  const role=q('#nuRole').value;
+  const allowed=collectAllowed(nuAllowedBox);
+  if(!username || !password || password.length<6) 
+    return alert(CURRENT_LANG==='tr'?'Kullanıcı adı ve 6+ karakter parola zorunlu.':'Username and 6+ character password required.');
+  const users=loadUsers();
+  if(users.some(u=>u.username===username)) 
+    return alert(CURRENT_LANG==='tr'?'Bu kullanıcı zaten var.':'This user already exists.');
+  const salt=genSaltB64(); const hash=await pbkdf2Hash(password, salt);
+  users.push({username,role,allowed:(role==='admin'?['*']:allowed),salt,hash,iters:120000});
+  saveUsers(users);
+  q('#nuUser').value=''; q('#nuPass').value='';
+  buildAllowedChecklist(nuAllowedBox, []); renderUsers();
+}
+function deleteUser(username){
+  if(username==='admin') 
+    return alert(CURRENT_LANG==='tr'?'Varsayılan admin silinemez.':'Default admin cannot be deleted.');
+  const users=loadUsers().filter(u=>u.username!==username);
+  saveUsers(users); renderUsers();
+}
+function openEditUser(username){
+  const users=loadUsers();
+  const u=users.find(x=>x.username===username); if(!u) return;
+  euUser.value=u.username;
+  euRole.value=u.role;
+  buildAllowedChecklist(euAllowedBox, (u.role==='admin'?['*']:(u.allowed||[])));
+  const disabled=(u.username==='admin');
+  euRole.disabled=disabled;
+  euDlg.classList.remove('hidden'); euDlg.classList.add('anim'); setTimeout(()=>euDlg.classList.remove('anim'),220);
+}
+function closeEditUser(){ euDlg.classList.add('hidden'); }
+function saveEditUser(){
+  const username=euUser.value;
+  const users=loadUsers();
+  const u=users.find(x=>x.username===username); if(!u) return;
+  if(u.username!=='admin'){
+    u.role=euRole.value;
+    u.allowed=(u.role==='admin')?['*']:collectAllowed(euAllowedBox);
+  }else{
+    u.role='admin'; u.allowed=['*'];
+  }
+  saveUsers(users); renderUsers(); closeEditUser();
+}
+
+/* CASINOLAR */
+function loadCasinoDescs(){ try{ return JSON.parse(localStorage.getItem(LS_CASINO_DESC)||'{}'); }catch{ return {}; } }
+function saveCasinoDescs(map){ localStorage.setItem(LS_CASINO_DESC, JSON.stringify(map)); }
+function loadCasinoInfos(){ try{ return JSON.parse(localStorage.getItem(LS_CASINO_INFO)||'{}'); }catch{ return {}; } }
+function saveCasinoInfos(map){ localStorage.setItem(LS_CASINO_INFO, JSON.stringify(map)); }
+function loadCasinoTitles(){ try{ return JSON.parse(localStorage.getItem(LS_CASINO_TITLES)||'{}'); }catch{ return {}; } }
+function saveCasinoTitles(map){ localStorage.setItem(LS_CASINO_TITLES, JSON.stringify(map)); }
+function loadCasinoOrder(){ try{ return JSON.parse(localStorage.getItem(LS_CASINO_ORDER)||'[]'); }catch{ return []; } }
+function saveCasinoOrder(list){ localStorage.setItem(LS_CASINO_ORDER, JSON.stringify(list)); }
+
+let CI_KEY=null;
+const casinoWrapId='casinoList';
+
+function openCasinoInfo(key){
+  CI_KEY=key;
+  const infos=loadCasinoInfos();
+  ciText.value=infos[key]||'';
+  const editable = !!(CURRENT && CURRENT.role==='admin');
+  ciText.disabled = !editable;
+  ciSave.style.display = editable ? '' : 'none';
+  ciDlg.classList.remove('hidden'); ciDlg.classList.add('anim'); setTimeout(()=>ciDlg.classList.remove('anim'),220);
+}
+function closeCasinoInfo(){ ciDlg.classList.add('hidden'); }
+function saveCasinoInfo(){
+  if(!(CURRENT && CURRENT.role==='admin')) return;
+  const map=loadCasinoInfos();
+  map[CI_KEY]=ciText.value;
+  saveCasinoInfos(map);
+  closeCasinoInfo();
+}
+
+let dragKey=null;
+function onDragStart(e){ e.currentTarget.classList.add('dragging'); dragKey=e.currentTarget.dataset.key; }
+function onDragEnd(e){ e.currentTarget.classList.remove('dragging'); dragKey=null; document.querySelectorAll('.dropPos').forEach(x=>x.remove()); }
+function onDragOver(e){
+  e.preventDefault();
+  const target=e.currentTarget;
+  if(target.classList.contains('dragging')) return;
+  let dp=target.querySelector('.dropPos');
+  if(!dp){ dp=document.createElement('div'); dp.className='dropPos'; target.prepend(dp); }
+}
+function onDrop(e){
+  e.preventDefault();
+  const target=e.currentTarget;
+  const targetKey=target.dataset.key;
+  if(!dragKey || dragKey===targetKey) return;
+  const wrap=document.getElementById(casinoWrapId);
+  const keys=Array.from(wrap.children).map(x=>x.dataset.key);
+  let arr=keys.filter(k=>k!==dragKey);
+  const idx=arr.indexOf(targetKey);
+  arr.splice(idx,0,dragKey);
+  saveCasinoOrder(arr);
+  renderCasinos();
+}
+
+async function renderCasinos(){
+  const wrap=document.getElementById('casinoList');
+  wrap.innerHTML='';
+  const descs=loadCasinoDescs();
+  const titles=loadCasinoTitles();
+  const paths=[], checks=[];
+  for(let i=1;i<=50;i++){
+    const p=`CASINOLARIMIZ/${i}.jpg`;
+    checks.push(new Promise(resolve=>{
+      const img=new Image();
+      img.onload=()=>{ paths.push(p); resolve(); };
+      img.onerror=()=>resolve();
+      img.src=p;
+    }));
+  }
+  await Promise.all(checks);
+  if(!paths.length){
+    wrap.innerHTML=`<div class="alert" style="margin:0 16px">${CURRENT_LANG==='tr'?'Klasörde numaralı JPG bulunamadı.':'No numbered JPG files found in folder.'} ${CURRENT_LANG==='tr'?'Örn:':'Example:'} <code>CASINOLARIMIZ/1.jpg</code></div>`;
+    return;
+  }
+  const order=loadCasinoOrder();
+  paths.sort((a,b)=>{
+    const ia=order.indexOf(a), ib=order.indexOf(b);
+    if(ia<0 && ib<0) return a.localeCompare(b);
+    if(ia<0) return 1;
+    if(ib<0) return -1;
+    return ia-ib;
+  });
+
+  const isAdmin = !!(CURRENT && CURRENT.role==='admin');
+
+  for(const p of paths){
+    const row=document.createElement('div'); row.className='casinoRow';
+    row.dataset.key=p;
+    row.draggable = isAdmin;
+    if(isAdmin){
+      row.addEventListener('dragstart',onDragStart);
+      row.addEventListener('dragend',onDragEnd);
+      row.addEventListener('dragover',onDragOver);
+      row.addEventListener('drop',onDrop);
+    }
+
+    const im=document.createElement('img'); im.src=p; im.alt=p; im.loading='lazy';
+    row.appendChild(im);
+
+    const right=document.createElement('div'); right.className='right';
+
+    const titleWrap=document.createElement('div'); titleWrap.className='casinoHdr';
+    const num=(p.match(/(\d+)\.jpg$/)||[])[1]||'';
+    const titleText=document.createElement('span');
+    titleText.textContent = titles[p] || (num ? ('CASINO ' + num) : 'CASINO');
+
+    titleWrap.appendChild(titleText);
+
+    if(isAdmin){
+      const tbtn=document.createElement('button');
+      tbtn.className='btn editTitleBtn';
+      tbtn.textContent=t('editName');
+      tbtn.onclick=()=>{
+        const map=loadCasinoTitles();
+        const nv=prompt(t('casinoName'), map[p] || titleText.textContent);
+        if(nv!=null){
+          if(nv.trim()==='') delete map[p]; else map[p]=nv.trim();
+          saveCasinoTitles(map);
+          renderCasinos();
+        }
+      };
+      titleWrap.appendChild(tbtn);
+    }
+
+    const ta=document.createElement('textarea');
+    ta.placeholder=t('description');
+    ta.value=descs[p]||'';
+    ta.dataset.key=p;
+    ta.disabled = !isAdmin;
+
+    const btnWrap=document.createElement('div'); btnWrap.className='casinoBtns';
+
+    const infoBtn=document.createElement('button');
+    infoBtn.className='btn';
+    infoBtn.textContent=t('casinoInfo');
+    infoBtn.type='button';
+    infoBtn.onclick=()=>openCasinoInfo(p);
+    btnWrap.appendChild(infoBtn);
+
+    const save=document.createElement('button');
+    save.className='btn';
+    save.textContent=t('save');
+    save.type='button';
+    save.style.display = isAdmin ? '' : 'none';
+    save.onclick=()=>{ 
+      const map=loadCasinoDescs(); 
+      map[p]=ta.value; 
+      saveCasinoDescs(map); 
+      save.textContent=t('saved'); 
+      setTimeout(()=>save.textContent=t('save'),1200) 
+    };
+    btnWrap.appendChild(save);
+
+    right.appendChild(titleWrap);
+    right.appendChild(ta);
+    right.appendChild(btnWrap);
+
+    row.appendChild(right);
+    wrap.appendChild(row);
+  }
+}
+
+/* BACKUP / RESTORE */
+async function blobToDataURL(blob){
+  return new Promise(res=>{
+    const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.readAsDataURL(blob);
+  });
+}
+async function dataURLToBlob(dataURL){
+  const r=await fetch(dataURL); return await r.blob();
+}
+
+async function doBackup(){
+  try {
+    showToast('Yedekleme başlatıldı...');
+    
+    const idb=await idbGetAll();
+    const idbPacked=[];
+    for(const rec of idb){
+      const dataURL=await blobToDataURL(rec.blob);
+      idbPacked.push({id:rec.id,name:rec.name,dataURL});
+    }
+    const data={
+      books: BOOKS,
+      cols: COLS,
+      casinoDescs: loadCasinoDescs(),
+      casinoInfos: loadCasinoInfos(),
+      casinoTitles: loadCasinoTitles(),
+      casinoOrder: loadCasinoOrder(),
+      idbPdfs: idbPacked,
+      ts: Date.now()
+    };
+    const blob=new Blob([JSON.stringify(data)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`merit-backup-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    
+    showToast('Yedekleme tamamlandı!');
+  } catch (error) {
+    console.error('Yedekleme hatası:', error);
+    showToast('Yedekleme başarısız!');
+  }
+}
+async function doRestoreFromFile(file){
+  try{
+    const txt=await file.text();
+    const data=JSON.parse(txt);
+
+    COLS=data.cols||COLS; saveCols();
+    BOOKS=data.books||BOOKS; saveBooks();
+
+    localStorage.setItem(LS_CASINO_DESC, JSON.stringify(data.casinoDescs||{}));
+    localStorage.setItem(LS_CASINO_INFO, JSON.stringify(data.casinoInfos||{}));
+    localStorage.setItem(LS_CASINO_TITLES, JSON.stringify(data.casinoTitles||{}));
+    localStorage.setItem(LS_CASINO_ORDER, JSON.stringify(data.casinoOrder||[]));
+
+    await idbClear();
+    const idbList=data.idbPdfs||[];
+    for(const r of idbList){
+      const blob=await dataURLToBlob(r.dataURL);
+      await idbAddPdf(r.id, r.name, blob);
+    }
+
+    await hydrateIdbPdfs();
+    renderCollectionOptions();
+    if(CURRENT_SECTION==='library') await renderLibrary();
+    if(CURRENT_SECTION==='casinos') renderCasinos();
+    showToast(CURRENT_LANG==='tr'?'Geri yükleme tamam':'Restore completed');
+  }catch(err){
+    alert((CURRENT_LANG==='tr'?'Geri yüklemede hata: ':'Restore error: ')+err);
+  }
+}
+
+/* AUTH UI */
+function applyAuthUI(){
+  whoami.textContent = CURRENT ? `${CURRENT.username} (${CURRENT.role})` : '—';
+  mobileMenuUser.textContent = CURRENT ? `${CURRENT.username} (${CURRENT.role})` : '—';
+  
+  document.querySelectorAll('.adminOnly').forEach(el=> el.style.display = (CURRENT && CURRENT.role==='admin') ? '' : 'none');
+  document.querySelectorAll('.editOnly').forEach(el=> el.style.display = (CURRENT && can('add_item')) ? '' : 'none');
+  
+  addPanel.style.display='none';
+  usersPanel.style.display='none';
+  
+  loginTopBtn.classList.toggle('hidden', !!CURRENT);
+  logoutBtn.classList.toggle('hidden', !CURRENT);
+  mNavLogin.classList.toggle('hidden', !!CURRENT);
+  mNavLogout.classList.toggle('hidden', !CURRENT);
+  
+  renderCollectionOptions();
+  if(CURRENT_SECTION==='library') {
+    renderAllowedCollectionsBar();
+    renderLibrary();
+  }
+  if(CURRENT_SECTION==='events') renderEventsGate();
+  if(CURRENT_SECTION==='articles') renderArticles();
+  if(CURRENT_SECTION==='casinos') renderCasinos();
+  toggleTopbarForSection(CURRENT_SECTION);
+  updateSearchVisibility();
+}
+
+/* EVENTS & INIT */
+mNavHelp.onclick=()=>{
+  closeMobileMenu();
+  const msg = CURRENT_LANG==='tr' 
+    ? 'Etkinlikler, Makaleler ve Kütüphane oturum gerektirir.\n' +
+      'Dil seçimine göre içerik filtrelenir.\n' +
+      'Yönetici ve editörler mobil menüden ayarlara erişemez (sadece masaüstünden).'
+    : 'Events, Articles and Library require login.\n' +
+      'Content is filtered by language selection.\n' +
+      'Admins and editors cannot access settings from mobile menu (desktop only).';
+  alert(msg);
+};
+
+mNavSettings.onclick=()=>{
+  closeMobileMenu();
+  if(settingsMenu) settingsDropdown.classList.toggle('show');
+};
+
+menuBtn.onclick=goBackFromViewer; backBtn.onclick=goBackFromViewer;
+
+addBookBtn.onclick=addItem; fillTplBtn.onclick=fillTpl;
+inputType.onchange=syncPlaceholders;
+
+// Klasör değiştiğinde etkinlik alt klasörünü göster/gizle
+if(inputFolder){
+  inputFolder.addEventListener('change', function(){
+    if(this.value === 'etkinlikler'){
+      eventSubfolderRow.classList.add('show');
+    } else {
+      eventSubfolderRow.classList.remove('show');
+    }
+  });
+}
+
+toggleAddBook.onclick=()=>{ 
+  if(!can('add_item')) return alert(t('noPermission')); 
+  addPanel.style.display='block'; 
+  q('#bType').value='flipbook'; 
+  syncPlaceholders(); 
+  inputFolder.value='dokumanlar';
+  eventSubfolderRow.classList.remove('show');
+};
+toggleAddPdf.onclick=()=>{ 
+  if(!can('add_item')) return alert(t('noPermission')); 
+  addPanel.style.display='block'; 
+  q('#bType').value='pdf'; 
+  syncPlaceholders(); 
+  inputFolder.value='dokumanlar';
+  eventSubfolderRow.classList.remove('show');
+};
+permaPdfBtn.onclick = () => permaPdfInput.click();
+
+colFilter.onchange=()=>{ if(CURRENT_SECTION==='library') renderLibrary(); };
+artSearch.oninput=renderArticles;
+libSearch.oninput=renderLibrary;
+
+if(backupBtn) backupBtn.onclick=()=>{ 
+  if(!(CURRENT && (CURRENT.role==='admin'||CURRENT.role==='editor'))) return; 
+  doBackup(); 
+};
+if(restoreBtn) restoreBtn.onclick=()=>{ 
+  if(!(CURRENT && (CURRENT.role==='admin'||CURRENT.role==='editor'))) return; 
+  backupFileInput.click(); 
+};
+backupFileInput.onchange=e=>{ 
+  const f=e.target.files?.[0]; 
+  if(f) doRestoreFromFile(f); 
+  backupFileInput.value=''; 
+};
+
+usersBtn.onclick=()=>{ 
+  if(!(CURRENT && CURRENT.role==='admin')) return;
+  usersPanel.style.display=(usersPanel.style.display==='block' ? 'none' : 'block');
+  buildAllowedChecklist(nuAllowedBox, []);
+  renderUsers();
+};
+
+q('#nuAdd').onclick=addUser;
+
+loginTopBtn.onclick = ()=>{ 
+  loginWrap.classList.remove('hidden'); 
+  loginWrap.classList.add('anim'); 
+  setTimeout(()=>loginWrap.classList.remove('anim'),220); 
+};
+
+mNavLogin.onclick = ()=>{
+  closeMobileMenu();
+  loginWrap.classList.remove('hidden'); 
+  loginWrap.classList.add('anim'); 
+  setTimeout(()=>loginWrap.classList.remove('anim'),220);
+};
+
+logoutBtn.onclick=()=>{ 
+  clearSession(); 
+  CURRENT=null; 
+  applyAuthUI(); 
+  showSection('home'); 
+};
+
+mNavLogout.onclick=()=>{
+  closeMobileMenu();
+  clearSession(); 
+  CURRENT=null; 
+  applyAuthUI(); 
+  showSection('home');
+};
+
+lgBtn.onclick=doLogin;
+function doLogin(){
+  lgErr.textContent='';
+  login(lgUser.value.trim(), lgPass.value).then(sess=>{
+    if(!sess){ 
+      lgErr.textContent=CURRENT_LANG==='tr'?'Hatalı kullanıcı adı/şifre.':'Invalid username/password.'; 
+      return; 
+    }
+    CURRENT=sess; saveSession(sess);
+    loginWrap.classList.add('hidden');
+    applyAuthUI();
+  });
+}
+lgPass.addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+lgUser.addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+
+euClose.onclick=closeEditUser; euSave.onclick=saveEditUser;
+ciClose.onclick=closeCasinoInfo; ciSave.onclick=saveCasinoInfo;
+
+if(settingsMenu){
+  const btn=settingsMenu.querySelector('.tab.icon');
+  btn.onclick=()=>{
+    settingsDropdown.classList.toggle('show');
+  };
+  document.addEventListener('click', e=>{
+    if(!settingsMenu.contains(e.target)){
+      settingsDropdown.classList.remove('show');
+    }
+  });
+}
+if(manageColsBtn){
+  manageColsBtn.onclick=()=>{
+    settingsDropdown.classList.remove('show');
+    openManageCollections();
+  };
+}
+
+document.getElementById('langTR').onclick=()=>switchLanguage('tr');
+document.getElementById('langEN').onclick=()=>switchLanguage('en');
+document.getElementById('mobileLangTR').onclick=()=>switchLanguage('tr');
+document.getElementById('mobileLangEN').onclick=()=>switchLanguage('en');
+
+/* init */
+(async ()=>{
+  await seedUsersIfMissing();
+  const sess=loadSession();
+  if(sess){ CURRENT=sess; }
+  
+  const savedLang = localStorage.getItem('merit_lang') || 'tr';
+  switchLanguage(savedLang);
+  
+  await hydrateIdbPdfs();
+  applyAuthUI();
+  showSection('home');
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</body>
+</html>
